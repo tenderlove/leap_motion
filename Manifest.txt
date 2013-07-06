@@ -1,0 +1,7 @@
+History.txt
+Manifest.txt
+README.txt
+Rakefile
+bin/leap_motion
+lib/leap_motion.rb
+test/test_leap_motion.rb
