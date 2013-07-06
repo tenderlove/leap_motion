@@ -1,7 +1,11 @@
-History.txt
+.autotest
+CHANGELOG.rdoc
 Manifest.txt
-README.txt
+README.rdoc
 Rakefile
 bin/leap_motion
+ext/leap_motion/extconf.rb
+ext/leap_motion/leap_motion.cpp
+ext/leap_motion/leap_motion.h
 lib/leap_motion.rb
 test/test_leap_motion.rb
