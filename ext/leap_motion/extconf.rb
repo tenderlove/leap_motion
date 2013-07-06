@@ -7,5 +7,6 @@ require 'mkmf'
 
 dir_config 'libLeap'
 
-find_header 'Leap.h'
-find_library 'Leap'
+$libs = append_library $libs, 'Leap'
+
+create_makefile 'leap_motion'
