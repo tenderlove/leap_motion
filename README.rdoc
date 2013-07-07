@@ -1,26 +1,41 @@
 = leap_motion
 
-* FIX (url)
+* http://github.com/tenderlove/leap_ruby
 
 == DESCRIPTION:
 
-FIX (describe your package)
+Wrapper around the C++ api for Leap Motion.
 
 == FEATURES/PROBLEMS:
 
-* FIX (list of features or problems)
+* Meh
 
 == SYNOPSIS:
 
-  FIX (code sample of usage)
+  require 'leap_motion'
+
+  controller = LeapMotion::Controller.new
+  controller.add_listener(Class.new(LeapMotion::Listener) {
+    def on_frame(frame)
+      p frame
+      puts "wow I got some data!~"
+    end
+  }.new)
 
 == REQUIREMENTS:
 
-* FIX (list of requirements)
+* A Leap Motion
 
 == INSTALL:
 
-* FIX (sudo gem install, anything else)
+* gem install leap_motion
+
+== HACKING:
+
+1. Download a copy of the Leap SDK
+2. Put the LeakSDK directory under ext
+3. `rake compile`
+5. Hack away
 
 == LICENSE:
 
