@@ -58,4 +58,9 @@ class TestLeapMotion < MiniTest::Unit::TestCase
     refute frame.valid?
     refute frame.invalid.valid?
   end
+
+  def test_frame_equality
+    frame = controller.frame
+    assert_match 'Invalid', frame.to_s
+  end
 end

@@ -220,6 +220,17 @@ static VALUE frame_invalid(VALUE self)
   return Data_Wrap_Struct(cFrame, 0, 0, invalid);
 }
 
+static VALUE frame_to_s(VALUE self)
+{
+  Leap::Frame * f;
+  const char * string;
+
+  Data_Get_Struct(self, Leap::Frame, f);
+
+  string = f->toString().c_str();
+  return rb_str_new2(string);
+}
+
 void Init_leap_motion()
 {
   mLeapMotion = rb_define_module("LeapMotion");
@@ -242,6 +253,7 @@ void Init_leap_motion()
   rb_define_method(cFrame, "id", (ruby_method_vararg *)frame_id, 0);
   rb_define_method(cFrame, "timestamp", (ruby_method_vararg *)frame_timestamp, 0);
   rb_define_method(cFrame, "invalid", (ruby_method_vararg *)frame_invalid, 0);
+  rb_define_method(cFrame, "to_s", (ruby_method_vararg *)frame_to_s, 0);
 
   on_init = rb_intern("on_init");
   on_connect = rb_intern("on_connect");
