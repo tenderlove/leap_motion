@@ -122,6 +122,15 @@ static VALUE has_focus_p(VALUE self)
   return Qfalse;
 }
 
+static VALUE policy_flags(VALUE self)
+{
+  Leap::Controller * controller;
+
+  Data_Get_Struct(self, Leap::Controller, controller);
+
+  return INT2NUM(controller->policyFlags());
+}
+
 static VALUE remove_listener(VALUE self, VALUE _listener)
 {
   Leap::Controller * controller;
@@ -163,6 +172,7 @@ void Init_leap_motion()
   rb_define_method(cController, "remove_listener", (ruby_method_vararg *)remove_listener, 1);
   rb_define_method(cController, "connected?", (ruby_method_vararg *)connected_p, 0);
   rb_define_method(cController, "has_focus?", (ruby_method_vararg *)has_focus_p, 0);
+  rb_define_method(cController, "policy_flags", (ruby_method_vararg *)policy_flags, 0);
 
   rb_define_alloc_func(cListener, allocate_listener);
 

@@ -34,4 +34,9 @@ class TestLeapMotion < MiniTest::Unit::TestCase
     controller = LeapMotion::Controller.new
     refute controller.has_focus?
   end
+
+  def test_policy_flags
+    controller = LeapMotion::Controller.new
+    assert_equal 0, controller.policy_flags
+  end
 end
