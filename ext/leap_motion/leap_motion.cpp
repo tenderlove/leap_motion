@@ -190,6 +190,24 @@ static VALUE valid_p(VALUE self)
   return Qfalse;
 }
 
+static VALUE frame_id(VALUE self)
+{
+  Leap::Frame * f;
+
+  Data_Get_Struct(self, Leap::Frame, f);
+
+  return INT2NUM(f->id());
+}
+
+static VALUE frame_timestamp(VALUE self)
+{
+  Leap::Frame * f;
+
+  Data_Get_Struct(self, Leap::Frame, f);
+
+  return INT2NUM(f->timestamp());
+}
+
 void Init_leap_motion()
 {
   mLeapMotion = rb_define_module("LeapMotion");
@@ -209,6 +227,8 @@ void Init_leap_motion()
   rb_define_alloc_func(cListener, allocate_listener);
 
   rb_define_method(cFrame, "valid?", (ruby_method_vararg *)valid_p, 0);
+  rb_define_method(cFrame, "id", (ruby_method_vararg *)frame_id, 0);
+  rb_define_method(cFrame, "timestamp", (ruby_method_vararg *)frame_timestamp, 0);
 
   on_init = rb_intern("on_init");
   on_connect = rb_intern("on_connect");
