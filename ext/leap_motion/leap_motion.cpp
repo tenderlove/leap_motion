@@ -1,9 +1,10 @@
 #include <leap_motion.h>
-#include <ruby.h>
 
 VALUE mLeapMotion;
 VALUE cController;
 VALUE cListener;
+
+typedef VALUE (ruby_method_vararg)(...);
 
 class RubyListener : public Leap::Listener {
   public:
@@ -33,6 +34,19 @@ static VALUE allocate(VALUE klass)
   return Data_Wrap_Struct(klass, 0, dealloc, controller);
 }
 
+VALUE add_listener(VALUE self, VALUE _listener)
+{
+  Leap::Controller * controller;
+  RubyListener * listener;
+
+  Data_Get_Struct(self, Leap::Controller, controller);
+  Data_Get_Struct(_listener, RubyListener, listener);
+
+  controller->addListener(*listener);
+
+  return _listener;
+}
+
 static VALUE dealloc_listener(void * controller)
 {
   delete reinterpret_cast<RubyListener*>(controller);
@@ -53,5 +67,7 @@ void Init_leap_motion()
   cListener = rb_define_class_under(mLeapMotion, "Listener", rb_cObject);
 
   rb_define_alloc_func(cController, allocate);
+  rb_define_method(cController, "add_listener", (ruby_method_vararg *)add_listener, 1);
+
   rb_define_alloc_func(cListener, allocate_listener);
 }

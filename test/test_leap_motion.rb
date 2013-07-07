@@ -9,4 +9,10 @@ class TestLeapMotion < MiniTest::Unit::TestCase
   def test_listener
     assert LeapMotion::Listener.new
   end
+
+  def test_add_listener
+    controller = LeapMotion::Controller.new
+    listener = LeapMotion::Listener.new
+    assert controller.add_listener listener
+  end
 end
