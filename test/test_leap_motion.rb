@@ -29,4 +29,9 @@ class TestLeapMotion < MiniTest::Unit::TestCase
     controller = LeapMotion::Controller.new
     refute controller.connected?
   end
+
+  def test_has_focus?
+    controller = LeapMotion::Controller.new
+    refute controller.has_focus?
+  end
 end
