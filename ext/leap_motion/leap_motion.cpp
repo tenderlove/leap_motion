@@ -96,6 +96,19 @@ static VALUE add_listener(VALUE self, VALUE _listener)
   return Qfalse;
 }
 
+static VALUE connected_p(VALUE self)
+{
+  Leap::Controller * controller;
+
+  Data_Get_Struct(self, Leap::Controller, controller);
+
+  if (true == controller->isConnected()) {
+    return Qtrue;
+  }
+
+  return Qfalse;
+}
+
 static VALUE remove_listener(VALUE self, VALUE _listener)
 {
   Leap::Controller * controller;
@@ -135,6 +148,7 @@ void Init_leap_motion()
   rb_define_alloc_func(cController, allocate);
   rb_define_method(cController, "add_listener", (ruby_method_vararg *)add_listener, 1);
   rb_define_method(cController, "remove_listener", (ruby_method_vararg *)remove_listener, 1);
+  rb_define_method(cController, "connected?", (ruby_method_vararg *)connected_p, 0);
 
   rb_define_alloc_func(cListener, allocate_listener);
 

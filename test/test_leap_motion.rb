@@ -24,4 +24,9 @@ class TestLeapMotion < MiniTest::Unit::TestCase
     assert controller.remove_listener listener
     refute controller.remove_listener listener
   end
+
+  def test_connected?
+    controller = LeapMotion::Controller.new
+    refute controller.connected?
+  end
 end
