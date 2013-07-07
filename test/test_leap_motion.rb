@@ -52,4 +52,10 @@ class TestLeapMotion < MiniTest::Unit::TestCase
     frame = controller.frame
     assert frame.timestamp
   end
+
+  def test_frame_invalid
+    frame = controller.frame
+    refute frame.valid?
+    refute frame.invalid.valid?
+  end
 end
