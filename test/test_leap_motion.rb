@@ -37,4 +37,9 @@ class TestLeapMotion < MiniTest::Unit::TestCase
   def test_policy_flags
     assert_equal 0, controller.policy_flags
   end
+
+  def test_frame
+    frame = controller.frame
+    refute frame.valid?
+  end
 end

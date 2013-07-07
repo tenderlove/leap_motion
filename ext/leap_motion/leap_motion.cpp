@@ -3,6 +3,8 @@
 VALUE mLeapMotion;
 VALUE cController;
 VALUE cListener;
+VALUE cFrame;
+
 ID on_init;
 ID on_connect;
 ID on_disconnect;
@@ -148,6 +150,20 @@ static VALUE remove_listener(VALUE self, VALUE _listener)
   return Qfalse;
 }
 
+static VALUE frame(VALUE self)
+{
+  Leap::Controller * controller;
+  Leap::Frame f;
+  Leap::Frame * copy;
+
+  Data_Get_Struct(self, Leap::Controller, controller);
+
+  f = controller->frame(0);
+  copy = new Leap::Frame(f);
+
+  return Data_Wrap_Struct(cFrame, 0, 0, copy);
+}
+
 static VALUE dealloc_listener(void * listener)
 {
   delete reinterpret_cast<RubyListener*>(listener);
@@ -161,11 +177,25 @@ static VALUE allocate_listener(VALUE klass)
   return rbobj;
 }
 
+static VALUE valid_p(VALUE self)
+{
+  Leap::Frame * f;
+
+  Data_Get_Struct(self, Leap::Frame, f);
+
+  if (true == f->isValid()) {
+    return Qtrue;
+  }
+
+  return Qfalse;
+}
+
 void Init_leap_motion()
 {
   mLeapMotion = rb_define_module("LeapMotion");
   cController = rb_define_class_under(mLeapMotion, "Controller", rb_cObject);
   cListener = rb_define_class_under(mLeapMotion, "Listener", rb_cObject);
+  cFrame = rb_define_class_under(mLeapMotion, "Frame", rb_cObject);
 
   rb_define_alloc_func(cController, allocate);
   rb_define_method(cController, "add_listener", (ruby_method_vararg *)add_listener, 1);
@@ -173,8 +203,12 @@ void Init_leap_motion()
   rb_define_method(cController, "connected?", (ruby_method_vararg *)connected_p, 0);
   rb_define_method(cController, "has_focus?", (ruby_method_vararg *)has_focus_p, 0);
   rb_define_method(cController, "policy_flags", (ruby_method_vararg *)policy_flags, 0);
+  rb_define_method(cController, "frame", (ruby_method_vararg *)frame, 0);
+
 
   rb_define_alloc_func(cListener, allocate_listener);
+
+  rb_define_method(cFrame, "valid?", (ruby_method_vararg *)valid_p, 0);
 
   on_init = rb_intern("on_init");
   on_connect = rb_intern("on_connect");
