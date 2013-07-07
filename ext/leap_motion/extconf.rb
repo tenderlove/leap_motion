@@ -4,7 +4,6 @@ require 'mkmf'
 
 # :stopdoc:
 
-
 dir_config 'libLeap'
 
 $libs = append_library $libs, 'Leap'

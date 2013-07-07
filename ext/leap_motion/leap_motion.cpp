@@ -15,7 +15,7 @@ static VALUE allocate(VALUE klass)
   return Data_Wrap_Struct(klass, 0, 0, controller);
 }
 
-void Init_leap_ruby()
+void Init_leap_motion()
 {
   mLeapMotion = rb_define_module("LeapMotion");
   cController = rb_define_class_under(mLeapMotion, "Controller", rb_cObject);
