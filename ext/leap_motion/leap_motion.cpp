@@ -23,7 +23,6 @@ class RubyListener : public Leap::Listener {
     virtual void onInit(const Leap::Controller& controller);
     virtual void onConnect(const Leap::Controller& controller);
     virtual void onDisconnect(const Leap::Controller& controller);
-    virtual void onExit(const Leap::Controller&);
     virtual void onFrame(const Leap::Controller&);
     virtual void onFocusGained(const Leap::Controller&);
     virtual void onFocusLost(const Leap::Controller&);
@@ -55,12 +54,6 @@ void RubyListener::onConnect(const Leap::Controller& controller) {
 
 void RubyListener::onDisconnect(const Leap::Controller& controller) {
   rb_funcall(listener, on_disconnect, 1, rb_iv_get(listener, "@controller"));
-}
-
-void RubyListener::onExit(const Leap::Controller& controller) {
-  if (!NIL_P(listener)) {
-    rb_funcall(listener, on_exit, 1, rb_iv_get(listener, "@controller"));
-  }
 }
 
 void RubyListener::onFrame(const Leap::Controller& controller) {
