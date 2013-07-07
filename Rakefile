@@ -3,6 +3,9 @@
 require 'rubygems'
 require 'hoe'
 
+# Adjust this to point at your SDK
+SDK = File.join Dir.home, 'Downloads', 'LeapSDK'
+
 Hoe.plugins.delete :rubyforge
 Hoe.plugin :minitest
 Hoe.plugin :gemspec # `gem install hoe-gemspec`
@@ -23,8 +26,6 @@ hoe = Hoe.spec 'leap_motion' do
     :extensions            => ["ext/leap_motion/extconf.rb"],
   }
 end
-
-SDK = File.join Dir.home, 'Downloads', 'LeapSDK'
 
 ENV['DYLD_LIBRARY_PATH'] = File.join SDK, 'lib'
 
