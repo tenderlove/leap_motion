@@ -3,17 +3,30 @@
 VALUE mLeapMotion;
 VALUE cController;
 VALUE cListener;
+ID on_init;
+ID on_connect;
+ID on_disconnect;
+ID on_exit;
+ID on_frame;
+ID on_focus_gained;
+ID on_focus_lost;
 
 typedef VALUE (ruby_method_vararg)(...);
 
 class RubyListener : public Leap::Listener {
   public:
     RubyListener();
+    ~RubyListener();
     VALUE getRubyListener();
     void setRubyListener(VALUE l);
 
     virtual void onInit(const Leap::Controller& controller);
     virtual void onConnect(const Leap::Controller& controller);
+    virtual void onDisconnect(const Leap::Controller& controller);
+    virtual void onExit(const Leap::Controller&);
+    virtual void onFrame(const Leap::Controller&);
+    virtual void onFocusGained(const Leap::Controller&);
+    virtual void onFocusLost(const Leap::Controller&);
 
   protected:
     VALUE listener;
@@ -23,15 +36,41 @@ RubyListener::RubyListener() {
   listener = Qnil;
 }
 
+RubyListener::~RubyListener() {
+  listener = Qnil;
+}
+
 void RubyListener::setRubyListener(VALUE l) { listener = l; }
 VALUE RubyListener::getRubyListener() { return listener; }
 
 void RubyListener::onInit(const Leap::Controller& controller) {
-  rb_funcall(listener, rb_intern("on_init"), 1, rb_iv_get(listener, "@controller"));
+  rb_funcall(listener, on_init, 1, rb_iv_get(listener, "@controller"));
 }
 
 void RubyListener::onConnect(const Leap::Controller& controller) {
-  rb_funcall(listener, rb_intern("on_connect"), 1, rb_iv_get(listener, "@controller"));
+  rb_funcall(listener, on_connect, 1, rb_iv_get(listener, "@controller"));
+}
+
+void RubyListener::onDisconnect(const Leap::Controller& controller) {
+  rb_funcall(listener, on_disconnect, 1, rb_iv_get(listener, "@controller"));
+}
+
+void RubyListener::onExit(const Leap::Controller& controller) {
+  if (!NIL_P(listener)) {
+    rb_funcall(listener, on_exit, 1, rb_iv_get(listener, "@controller"));
+  }
+}
+
+void RubyListener::onFrame(const Leap::Controller& controller) {
+  rb_funcall(listener, on_frame, 1, rb_iv_get(listener, "@controller"));
+}
+
+void RubyListener::onFocusGained(const Leap::Controller& controller) {
+  rb_funcall(listener, on_focus_gained, 1, rb_iv_get(listener, "@controller"));
+}
+
+void RubyListener::onFocusLost(const Leap::Controller& controller) {
+  rb_funcall(listener, on_focus_lost, 1, rb_iv_get(listener, "@controller"));
 }
 
 static VALUE dealloc(void * controller)
@@ -70,11 +109,11 @@ static VALUE remove_listener(VALUE self, VALUE _listener)
   Data_Get_Struct(self, Leap::Controller, controller);
   Data_Get_Struct(_listener, RubyListener, listener);
 
-  rb_iv_set(_listener, "@controller", Qnil);
-
   if (true == controller->removeListener(*listener)) {
     return Qtrue;
   }
+
+  rb_iv_set(_listener, "@controller", Qnil);
 
   return Qfalse;
 }
@@ -103,4 +142,12 @@ void Init_leap_motion()
   rb_define_method(cController, "remove_listener", (ruby_method_vararg *)remove_listener, 1);
 
   rb_define_alloc_func(cListener, allocate_listener);
+
+  on_init = rb_intern("on_init");
+  on_connect = rb_intern("on_connect");
+  on_disconnect = rb_intern("on_disconnect");
+  on_exit = rb_intern("on_exit");
+  on_frame = rb_intern("on_frame");
+  on_focus_gained = rb_intern("on_focus_gained");
+  on_focus_lost = rb_intern("on_focus_lost");
 }
