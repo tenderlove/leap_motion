@@ -4,6 +4,5 @@
 
 typedef void * LeapController;
 
-extern "C" LeapController new_controller(void);
 extern "C" void Init_leap_motion(void);
 
