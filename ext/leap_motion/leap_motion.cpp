@@ -12,6 +12,9 @@ class RubyListener : public Leap::Listener {
     VALUE getRubyListener();
     void setRubyListener(VALUE l);
 
+    virtual void onInit(const Leap::Controller& controller);
+    virtual void onConnect(const Leap::Controller& controller);
+
   protected:
     VALUE listener;
 };
@@ -22,6 +25,14 @@ RubyListener::RubyListener() {
 
 void RubyListener::setRubyListener(VALUE l) { listener = l; }
 VALUE RubyListener::getRubyListener() { return listener; }
+
+void RubyListener::onInit(const Leap::Controller& controller) {
+  rb_funcall(listener, rb_intern("on_init"), 1, rb_iv_get(listener, "@controller"));
+}
+
+void RubyListener::onConnect(const Leap::Controller& controller) {
+  rb_funcall(listener, rb_intern("on_connect"), 1, rb_iv_get(listener, "@controller"));
+}
 
 static VALUE dealloc(void * controller)
 {
@@ -34,7 +45,7 @@ static VALUE allocate(VALUE klass)
   return Data_Wrap_Struct(klass, 0, dealloc, controller);
 }
 
-VALUE add_listener(VALUE self, VALUE _listener)
+static VALUE add_listener(VALUE self, VALUE _listener)
 {
   Leap::Controller * controller;
   RubyListener * listener;
@@ -42,14 +53,35 @@ VALUE add_listener(VALUE self, VALUE _listener)
   Data_Get_Struct(self, Leap::Controller, controller);
   Data_Get_Struct(_listener, RubyListener, listener);
 
-  controller->addListener(*listener);
+  rb_iv_set(_listener, "@controller", self);
 
-  return _listener;
+  if (true == controller->addListener(*listener)) {
+    return Qtrue;
+  }
+
+  return Qfalse;
 }
 
-static VALUE dealloc_listener(void * controller)
+static VALUE remove_listener(VALUE self, VALUE _listener)
 {
-  delete reinterpret_cast<RubyListener*>(controller);
+  Leap::Controller * controller;
+  RubyListener * listener;
+
+  Data_Get_Struct(self, Leap::Controller, controller);
+  Data_Get_Struct(_listener, RubyListener, listener);
+
+  rb_iv_set(_listener, "@controller", Qnil);
+
+  if (true == controller->removeListener(*listener)) {
+    return Qtrue;
+  }
+
+  return Qfalse;
+}
+
+static VALUE dealloc_listener(void * listener)
+{
+  delete reinterpret_cast<RubyListener*>(listener);
 }
 
 static VALUE allocate_listener(VALUE klass)
@@ -68,6 +100,7 @@ void Init_leap_motion()
 
   rb_define_alloc_func(cController, allocate);
   rb_define_method(cController, "add_listener", (ruby_method_vararg *)add_listener, 1);
+  rb_define_method(cController, "remove_listener", (ruby_method_vararg *)remove_listener, 1);
 
   rb_define_alloc_func(cListener, allocate_listener);
 }

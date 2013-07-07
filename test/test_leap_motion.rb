@@ -14,5 +14,14 @@ class TestLeapMotion < MiniTest::Unit::TestCase
     controller = LeapMotion::Controller.new
     listener = LeapMotion::Listener.new
     assert controller.add_listener listener
+    refute controller.add_listener listener
+  end
+
+  def test_remove_listener
+    controller = LeapMotion::Controller.new
+    listener = LeapMotion::Listener.new
+    assert controller.add_listener listener
+    assert controller.remove_listener listener
+    refute controller.remove_listener listener
   end
 end
