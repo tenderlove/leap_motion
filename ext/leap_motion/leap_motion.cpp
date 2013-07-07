@@ -32,7 +32,9 @@ class RubyListener : public Leap::Listener {
     VALUE listener;
 };
 
-RubyListener::RubyListener() {
+RubyListener::RubyListener()
+: Leap::Listener()
+{
   listener = Qnil;
 }
 
