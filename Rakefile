@@ -3,8 +3,8 @@
 require 'rubygems'
 require 'hoe'
 
-# Adjust this to point at your SDK
-SDK = File.join Dir.home, 'Downloads', 'LeapSDK'
+# Copy LeapSDK in to ext
+SDK = File.join File.dirname(__FILE__), 'ext', 'LeapSDK'
 
 Hoe.plugins.delete :rubyforge
 Hoe.plugin :minitest
