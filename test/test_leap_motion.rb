@@ -13,6 +13,26 @@ class TestLeapMotion < MiniTest::Unit::TestCase
     assert LeapMotion::Listener.new
   end
 
+  class Recorder
+    attr_reader :methods
+
+    def initialize
+      @methods = []
+    end
+
+    def method_missing name, controller
+      @methods << [name, controller]
+    end
+  end
+
+  def test_listener_gets_info
+    listener = Recorder.new
+    controller.add_listener listener
+    controller.remove_listener listener
+    refute_predicate listener.methods, :empty?
+    assert_includes listener.methods.map(&:last), controller
+  end
+
   def test_add_listener
     listener = LeapMotion::Listener.new
     assert controller.add_listener listener

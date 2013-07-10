@@ -47,64 +47,77 @@ void RubyListener::setRubyListener(VALUE l) { listener = l; }
 VALUE RubyListener::getRubyListener() { return listener; }
 
 void RubyListener::onInit(const Leap::Controller& controller) {
-  rb_funcall(listener, on_init, 1, rb_iv_get(listener, "@controller"));
+  rb_funcall(listener, on_init, 0);
 }
 
 void RubyListener::onConnect(const Leap::Controller& controller) {
-  rb_funcall(listener, on_connect, 1, rb_iv_get(listener, "@controller"));
+  rb_funcall(listener, on_connect, 0);
 }
 
 void RubyListener::onDisconnect(const Leap::Controller& controller) {
-  rb_funcall(listener, on_disconnect, 1, rb_iv_get(listener, "@controller"));
+  rb_funcall(listener, on_disconnect, 0);
 }
 
 void RubyListener::onFrame(const Leap::Controller& controller) {
-  rb_funcall(listener, on_frame, 1, rb_iv_get(listener, "@controller"));
+  rb_funcall(listener, on_frame, 0);
 }
 
 void RubyListener::onFocusGained(const Leap::Controller& controller) {
-  rb_funcall(listener, on_focus_gained, 1, rb_iv_get(listener, "@controller"));
+  rb_funcall(listener, on_focus_gained, 0);
 }
 
 void RubyListener::onFocusLost(const Leap::Controller& controller) {
-  rb_funcall(listener, on_focus_lost, 1, rb_iv_get(listener, "@controller"));
+  rb_funcall(listener, on_focus_lost, 0);
 }
 
-static VALUE dealloc(void * controller)
+class RubyController
 {
-  delete reinterpret_cast<Leap::Controller*>(controller);
+  public:
+    RubyController();
+    ~RubyController();
+    Leap::Controller * getController();
+    RubyListener * getListener();
+
+  protected:
+    Leap::Controller * controller;
+    RubyListener * listener;
+};
+
+RubyController::RubyController() {
+  controller = new Leap::Controller;
+  listener = new RubyListener;
+}
+
+RubyController::~RubyController() {
+  delete controller;
+  delete listener;
+}
+
+Leap::Controller * RubyController::getController() { return controller; }
+RubyListener * RubyController::getListener() { return listener; }
+
+static void dealloc(void * controller)
+{
+  delete reinterpret_cast<RubyController*>(controller);
 }
 
 static VALUE allocate(VALUE klass)
 {
-  Leap::Controller * controller = new Leap::Controller();
-  return Data_Wrap_Struct(klass, 0, dealloc, controller);
-}
+  VALUE self;
+  RubyController * controller = new RubyController();
+  self = Data_Wrap_Struct(klass, 0, dealloc, controller);
+  controller->getListener()->setRubyListener(self);
 
-static VALUE add_listener(VALUE self, VALUE _listener)
-{
-  Leap::Controller * controller;
-  RubyListener * listener;
-
-  Data_Get_Struct(self, Leap::Controller, controller);
-  Data_Get_Struct(_listener, RubyListener, listener);
-
-  rb_iv_set(_listener, "@controller", self);
-
-  if (true == controller->addListener(*listener)) {
-    return Qtrue;
-  }
-
-  return Qfalse;
+  return self;
 }
 
 static VALUE connected_p(VALUE self)
 {
-  Leap::Controller * controller;
+  RubyController * controller;
 
-  Data_Get_Struct(self, Leap::Controller, controller);
+  Data_Get_Struct(self, RubyController, controller);
 
-  if (true == controller->isConnected()) {
+  if (true == controller->getController()->isConnected()) {
     return Qtrue;
   }
 
@@ -113,11 +126,11 @@ static VALUE connected_p(VALUE self)
 
 static VALUE has_focus_p(VALUE self)
 {
-  Leap::Controller * controller;
+  RubyController * controller;
 
-  Data_Get_Struct(self, Leap::Controller, controller);
+  Data_Get_Struct(self, RubyController, controller);
 
-  if (true == controller->hasFocus()) {
+  if (true == controller->getController()->hasFocus()) {
     return Qtrue;
   }
 
@@ -126,45 +139,60 @@ static VALUE has_focus_p(VALUE self)
 
 static VALUE policy_flags(VALUE self)
 {
-  Leap::Controller * controller;
+  RubyController * controller;
 
-  Data_Get_Struct(self, Leap::Controller, controller);
+  Data_Get_Struct(self, RubyController, controller);
 
-  return INT2NUM(controller->policyFlags());
-}
-
-static VALUE remove_listener(VALUE self, VALUE _listener)
-{
-  Leap::Controller * controller;
-  RubyListener * listener;
-
-  Data_Get_Struct(self, Leap::Controller, controller);
-  Data_Get_Struct(_listener, RubyListener, listener);
-
-  if (true == controller->removeListener(*listener)) {
-    return Qtrue;
-  }
-
-  rb_iv_set(_listener, "@controller", Qnil);
-
-  return Qfalse;
+  return INT2NUM(controller->getController()->policyFlags());
 }
 
 static VALUE frame(VALUE self)
 {
-  Leap::Controller * controller;
+  RubyController * controller;
   Leap::Frame f;
   Leap::Frame * copy;
 
-  Data_Get_Struct(self, Leap::Controller, controller);
+  Data_Get_Struct(self, RubyController, controller);
 
-  f = controller->frame(0);
+  f = controller->getController()->frame(0);
   copy = new Leap::Frame(f);
 
   return Data_Wrap_Struct(cFrame, 0, 0, copy);
 }
 
-static VALUE dealloc_listener(void * listener)
+static VALUE listen(VALUE self)
+{
+  RubyController * controller;
+  RubyListener * listener;
+
+  Data_Get_Struct(self, RubyController, controller);
+
+  listener = controller->getListener();
+
+  if (controller->getController()->addListener(*listener)) {
+    return Qtrue;
+  }
+
+  return Qfalse;
+}
+
+static VALUE unlisten(VALUE self)
+{
+  RubyController * controller;
+  RubyListener * listener;
+
+  Data_Get_Struct(self, RubyController, controller);
+
+  listener = controller->getListener();
+
+  if (controller->getController()->removeListener(*listener)) {
+    return Qtrue;
+  }
+
+  return Qfalse;
+}
+
+static void dealloc_listener(void * listener)
 {
   delete reinterpret_cast<RubyListener*>(listener);
 }
@@ -239,13 +267,12 @@ void Init_leap_motion()
   cFrame = rb_define_class_under(mLeapMotion, "Frame", rb_cObject);
 
   rb_define_alloc_func(cController, allocate);
-  rb_define_method(cController, "add_listener", (ruby_method_vararg *)add_listener, 1);
-  rb_define_method(cController, "remove_listener", (ruby_method_vararg *)remove_listener, 1);
   rb_define_method(cController, "connected?", (ruby_method_vararg *)connected_p, 0);
   rb_define_method(cController, "has_focus?", (ruby_method_vararg *)has_focus_p, 0);
   rb_define_method(cController, "policy_flags", (ruby_method_vararg *)policy_flags, 0);
   rb_define_method(cController, "frame", (ruby_method_vararg *)frame, 0);
-
+  rb_define_private_method(cController, "listen!", (ruby_method_vararg *)listen, 0);
+  rb_define_private_method(cController, "unlisten!", (ruby_method_vararg *)unlisten, 0);
 
   rb_define_alloc_func(cListener, allocate_listener);
 
