@@ -69,6 +69,18 @@ static VALUE rightmost(VALUE self)
   return WrapHand(hand);
 }
 
+static VALUE frontmost(VALUE self)
+{
+  Leap::HandList * list;
+  Leap::Hand * hand;
+
+  Data_Get_Struct(self, Leap::HandList, list);
+
+  hand = new Leap::Hand(list->frontmost());
+
+  return WrapHand(hand);
+}
+
 /** HAND **/
 
 static VALUE valid_p(VALUE self)
@@ -106,6 +118,7 @@ void Init_leap_hand()
   rb_define_method(cHandList, "empty?", (ruby_method_vararg *)empty_p, 0);
   rb_define_method(cHandList, "leftmost", (ruby_method_vararg *)leftmost, 0);
   rb_define_method(cHandList, "rightmost", (ruby_method_vararg *)rightmost, 0);
+  rb_define_method(cHandList, "frontmost", (ruby_method_vararg *)frontmost, 0);
 
   cHand = rb_define_class_under(mLeapMotion, "Hand", rb_cObject);
   rb_define_method(cHand, "valid?", (ruby_method_vararg *)valid_p, 0);
