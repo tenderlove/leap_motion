@@ -2,6 +2,16 @@
 
 VALUE cFrame;
 
+static void frame_dealloc(void * frame)
+{
+  delete reinterpret_cast<Leap::Frame*>(frame);
+}
+
+VALUE WrapFrame(Leap::Frame * f)
+{
+  return Data_Wrap_Struct(cFrame, 0, frame_dealloc, f);
+}
+
 static VALUE valid_p(VALUE self)
 {
   Leap::Frame * f;

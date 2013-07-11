@@ -11,10 +11,9 @@ module LeapMotion
     def initialize
       super
       @listeners = Set.new
-      @mutex = Mutex.new
-
-      ios = EVENTS.map { |event| IO.new send "#{event}_fd" }
-      @listener = start_listener ios
+      @mutex     = Mutex.new
+      ios        = EVENTS.map { |event| IO.new send "#{event}_fd" }
+      @listener  = start_listener ios
     end
 
     def join; @listener.join; end

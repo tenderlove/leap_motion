@@ -169,11 +169,6 @@ static VALUE policy_flags(VALUE self)
   return INT2NUM(controller->getController()->policyFlags());
 }
 
-static void frame_dealloc(void * frame)
-{
-  delete reinterpret_cast<Leap::Frame*>(frame);
-}
-
 static VALUE frame(VALUE self)
 {
   RubyController * controller;
@@ -185,7 +180,7 @@ static VALUE frame(VALUE self)
   f = controller->getController()->frame(0);
   copy = new Leap::Frame(f);
 
-  return Data_Wrap_Struct(cFrame, 0, frame_dealloc, copy);
+  return WrapFrame(copy);
 }
 
 static VALUE listen(VALUE self)

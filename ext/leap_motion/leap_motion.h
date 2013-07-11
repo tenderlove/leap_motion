@@ -13,3 +13,5 @@ extern VALUE cFrame;
 extern "C" void Init_leap_motion(void);
 extern "C" void Init_leap_frame(void);
 
+VALUE WrapFrame(Leap::Frame * f);
+
