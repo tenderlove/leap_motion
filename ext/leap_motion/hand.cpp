@@ -127,6 +127,15 @@ static VALUE hand_eql(VALUE self, VALUE other)
   return Qfalse;
 }
 
+static VALUE hand_id(VALUE self)
+{
+  Leap::Hand * hand;
+
+  Data_Get_Struct(self, Leap::Hand, hand);
+
+  return INT2NUM(hand->id());
+}
+
 void Init_leap_hand()
 {
   cHandList = rb_define_class_under(mLeapMotion, "HandList", rb_cObject);
@@ -140,4 +149,5 @@ void Init_leap_hand()
   cHand = rb_define_class_under(mLeapMotion, "Hand", rb_cObject);
   rb_define_method(cHand, "valid?", (ruby_method_vararg *)valid_p, 0);
   rb_define_method(cHand, "==", (ruby_method_vararg *)hand_eql, 1);
+  rb_define_method(cHand, "id", (ruby_method_vararg *)hand_id, 0);
 }
