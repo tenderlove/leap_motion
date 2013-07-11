@@ -15,12 +15,10 @@ Wrapper around the C++ api for Leap Motion.
   require 'leap_motion'
 
   controller = LeapMotion::Controller.new
-  controller.add_listener(Class.new(LeapMotion::Listener) {
-    def on_frame(frame)
-      p frame
-      puts "wow I got some data!~"
-    end
-  }.new)
+  controller.each_frame do |frame|
+    p frame
+    puts "wow I got some data!~"
+  end
 
 == REQUIREMENTS:
 
