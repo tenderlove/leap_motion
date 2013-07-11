@@ -9,6 +9,10 @@ module LeapMotion
     include Enumerable
   end
 
+  class FingerList
+    include Enumerable
+  end
+
   class Controller
     EVENTS = [:init, :connect, :disconnect, :frame, :focus_gained, :focus_lost]
 

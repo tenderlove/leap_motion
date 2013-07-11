@@ -283,6 +283,7 @@ void Init_leap_motion()
 
   Init_leap_frame();
   Init_leap_hand();
+  Init_leap_finger();
 
   on_init = rb_intern("on_init");
   on_connect = rb_intern("on_connect");
