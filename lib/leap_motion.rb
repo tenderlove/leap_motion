@@ -5,6 +5,10 @@ require 'thread'
 module LeapMotion
   VERSION = '1.0.0'
 
+  class HandList
+    include Enumerable
+  end
+
   class Controller
     EVENTS = [:init, :connect, :disconnect, :frame, :focus_gained, :focus_lost]
 
