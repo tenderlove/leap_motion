@@ -22,6 +22,20 @@ module LeapMotion
 
     def join; @listener.join; end
 
+    def each_frame
+      reader = IO.new frame_fd
+      listen!
+      loop do
+        rs, = IO.select [reader]
+        rs.each { |io|
+          io.read 1
+          yield frame
+        }
+      end
+    ensure
+      unlisten! if @listeners.empty?
+    end
+
     def add_listener listener
       @mutex.synchronize do
         return false if @listeners.include? listener
