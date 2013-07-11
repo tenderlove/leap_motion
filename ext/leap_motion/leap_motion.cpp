@@ -282,7 +282,7 @@ void Init_leap_motion()
   rb_define_private_method(cController, "focus_lost_fd", (ruby_method_vararg *)focus_lost_fd, 0);
 
   Init_leap_frame();
-
+  Init_leap_hand();
 
   on_init = rb_intern("on_init");
   on_connect = rb_intern("on_connect");

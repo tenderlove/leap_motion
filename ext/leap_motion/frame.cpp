@@ -66,19 +66,17 @@ static VALUE frame_to_s(VALUE self)
   return rb_str_new2(string);
 }
 
-/*
 static VALUE frame_hands(VALUE self)
 {
   Leap::Frame * f;
-  const char * string;
+  Leap::HandList * list;
 
   Data_Get_Struct(self, Leap::Frame, f);
-  Data_Get_Struct(self, Leap::Frame, f);
 
-  string = f->toString().c_str();
-  return rb_str_new2(string);
+  list = new Leap::HandList(f->hands());
+
+  return WrapHandList(list);
 }
-*/
 
 void Init_leap_frame()
 {
@@ -89,5 +87,5 @@ void Init_leap_frame()
   rb_define_method(cFrame, "timestamp", (ruby_method_vararg *)frame_timestamp, 0);
   rb_define_method(cFrame, "invalid", (ruby_method_vararg *)frame_invalid, 0);
   rb_define_method(cFrame, "to_s", (ruby_method_vararg *)frame_to_s, 0);
-  // rb_define_method(cFrame, "hands", (ruby_method_vararg *)frame_hands, 0);
+  rb_define_method(cFrame, "hands", (ruby_method_vararg *)frame_hands, 0);
 }
