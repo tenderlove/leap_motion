@@ -172,13 +172,11 @@ static VALUE policy_flags(VALUE self)
 static VALUE frame(VALUE self)
 {
   RubyController * controller;
-  Leap::Frame f;
   Leap::Frame * copy;
 
   Data_Get_Struct(self, RubyController, controller);
 
-  f = controller->getController()->frame(0);
-  copy = new Leap::Frame(f);
+  copy = new Leap::Frame(controller->getController()->frame(0));
 
   return WrapFrame(copy);
 }
