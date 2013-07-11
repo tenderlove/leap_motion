@@ -6,11 +6,18 @@ module LeapMotion
   VERSION = '1.0.0'
 
   class Controller
+    EVENTS = [:init, :connect, :disconnect, :frame, :focus_gained, :focus_lost]
+
     def initialize
       super
       @listeners = Set.new
       @mutex = Mutex.new
+
+      ios = EVENTS.map { |event| IO.new send "#{event}_fd" }
+      @listener = start_listener ios
     end
+
+    def join; @listener.join; end
 
     def add_listener listener
       @mutex.synchronize do
@@ -29,55 +36,41 @@ module LeapMotion
     end
 
     private
-    def on_init
-      @listeners.each { |listener| listener.on_init self }
+
+    def start_listener ios
+      methods = EVENTS.map { |e| "on_#{e}" }
+      dispatch = Hash[ios.zip(methods)]
+      Thread.new do
+        loop do
+          rs, = IO.select ios
+          rs.each { |io|
+            io.read 1
+            send dispatch[io]
+          }
+        end
+      end
     end
 
-    def on_connect
-      @listeners.each { |listener| listener.on_connect self }
-    end
-
-    def on_disconnect
-      @listeners.each { |listener| listener.on_disconnect self }
-    end
-
-    def on_exit
-      @listeners.each { |listener| listener.on_exit self }
-    end
-
-    def on_frame
-      @listeners.each { |listener| listener.on_frame self }
-    end
-
-    def on_focus_gained
-      @listeners.each { |listener| listener.on_focus_gained self }
-    end
-
-    def on_focus_lost
-      @listeners.each { |listener| listener.on_focus_lost self }
+    EVENTS.each do |event|
+      class_eval <<-EORUBY, __FILE__, __LINE__ + 1
+      def on_#{event}
+        @listeners.each { |l| l.on_#{event} self }
+      end
+      EORUBY
     end
   end
 
+  module Events
+    def on_init controller; end
+    def on_connect controller; end
+    def on_disconnect controller; end
+    def on_exit controller; end
+    def on_frame controller; end
+    def on_focus_gained controller; end
+    def on_focus_lost controller; end
+  end
+
   class Listener
-    def on_init controller
-    end
-
-    def on_connect controller
-    end
-
-    def on_disconnect controller
-    end
-
-    def on_exit controller
-    end
-
-    def on_frame controller
-    end
-
-    def on_focus_gained controller
-    end
-
-    def on_focus_lost controller
-    end
+    include Events
   end
 end

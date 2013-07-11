@@ -1,5 +1,6 @@
 require 'minitest/autorun'
 require 'leap_motion'
+require 'monitor'
 
 class TestLeapMotion < MiniTest::Unit::TestCase
   attr_reader :controller
@@ -13,24 +14,35 @@ class TestLeapMotion < MiniTest::Unit::TestCase
     assert LeapMotion::Listener.new
   end
 
-  class Recorder
-    attr_reader :methods
-
+  class Latch
     def initialize
-      @methods = []
+      @locked = true
+      @lock = Monitor.new
+      @cv = @lock.new_cond
     end
 
-    def method_missing name, controller
-      @methods << [name, controller]
+    def release
+      @lock.synchronize do
+        @locked = false
+        @cv.broadcast
+      end
     end
+    def await; @lock.synchronize { @cv.wait_while { @locked } }; end
   end
 
   def test_listener_gets_info
-    listener = Recorder.new
+    events = []
+    latch = Latch.new
+    listener = Class.new {
+      LeapMotion::Controller::EVENTS.each do |event|
+        define_method("on_#{event}") { |c| events << c; latch.release }
+      end
+    }.new
     controller.add_listener listener
+    latch.await
     controller.remove_listener listener
-    refute_predicate listener.methods, :empty?
-    assert_includes listener.methods.map(&:last), controller
+    refute_predicate events, :empty?
+    assert_includes events, controller
   end
 
   def test_add_listener

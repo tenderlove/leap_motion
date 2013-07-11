@@ -2,7 +2,6 @@
 
 VALUE mLeapMotion;
 VALUE cController;
-VALUE cListener;
 VALUE cFrame;
 
 ID on_init;
@@ -21,6 +20,12 @@ class RubyListener : public Leap::Listener {
     ~RubyListener();
     VALUE getRubyListener();
     void setRubyListener(VALUE l);
+    int * getInitPipes();
+    int * getConnectPipes();
+    int * getDisconnectPipes();
+    int * getFramePipes();
+    int * getFocusGainedPipes();
+    int * getFocusLostPipes();
 
     virtual void onInit(const Leap::Controller& controller);
     virtual void onConnect(const Leap::Controller& controller);
@@ -31,43 +36,63 @@ class RubyListener : public Leap::Listener {
 
   protected:
     VALUE listener;
+    int initPipes[2];
+    int connectPipes[2];
+    int disconnectPipes[2];
+    int framePipes[2];
+    int focusGainedPipes[2];
+    int focusLostPipes[2];
 };
 
 RubyListener::RubyListener()
 : Leap::Listener()
 {
   listener = Qnil;
+  rb_pipe(framePipes);
+  rb_pipe(initPipes);
+  rb_pipe(connectPipes);
+  rb_pipe(disconnectPipes);
+  rb_pipe(framePipes);
+  rb_pipe(focusGainedPipes);
+  rb_pipe(focusLostPipes);
 }
 
 RubyListener::~RubyListener() {
   listener = Qnil;
 }
 
+int * RubyListener::getInitPipes() { return initPipes; }
+int * RubyListener::getConnectPipes() { return connectPipes; }
+int * RubyListener::getDisconnectPipes() { return disconnectPipes; }
+int * RubyListener::getFramePipes() { return framePipes; }
+int * RubyListener::getFocusGainedPipes() { return focusGainedPipes; }
+int * RubyListener::getFocusLostPipes() { return focusLostPipes; }
+
 void RubyListener::setRubyListener(VALUE l) { listener = l; }
 VALUE RubyListener::getRubyListener() { return listener; }
 
 void RubyListener::onInit(const Leap::Controller& controller) {
-  rb_funcall(listener, on_init, 0);
+  write(initPipes[1], "i", 1);
 }
 
 void RubyListener::onConnect(const Leap::Controller& controller) {
-  rb_funcall(listener, on_connect, 0);
+  write(connectPipes[1], "c", 1);
 }
 
 void RubyListener::onDisconnect(const Leap::Controller& controller) {
-  rb_funcall(listener, on_disconnect, 0);
+  write(disconnectPipes[1], "d", 1);
 }
 
 void RubyListener::onFrame(const Leap::Controller& controller) {
-  rb_funcall(listener, on_frame, 0);
+  write(framePipes[1], "f", 1);
 }
 
 void RubyListener::onFocusGained(const Leap::Controller& controller) {
-  rb_funcall(listener, on_focus_gained, 0);
+  write(focusGainedPipes[1], "f", 1);
 }
 
 void RubyListener::onFocusLost(const Leap::Controller& controller) {
-  rb_funcall(listener, on_focus_lost, 0);
+  write(focusLostPipes[1], "l", 1);
 }
 
 class RubyController
@@ -89,6 +114,7 @@ RubyController::RubyController() {
 }
 
 RubyController::~RubyController() {
+  controller->removeListener(*listener);
   delete controller;
   delete listener;
 }
@@ -192,6 +218,42 @@ static VALUE unlisten(VALUE self)
   return Qfalse;
 }
 
+static VALUE init_fd(VALUE self) {
+  RubyController * controller;
+  Data_Get_Struct(self, RubyController, controller);
+  return INT2NUM(controller->getListener()->getInitPipes()[0]);
+}
+
+static VALUE connect_fd(VALUE self) {
+  RubyController * controller;
+  Data_Get_Struct(self, RubyController, controller);
+  return INT2NUM(controller->getListener()->getConnectPipes()[0]);
+}
+
+static VALUE disconnect_fd(VALUE self) {
+  RubyController * controller;
+  Data_Get_Struct(self, RubyController, controller);
+  return INT2NUM(controller->getListener()->getDisconnectPipes()[0]);
+}
+
+static VALUE frame_fd(VALUE self) {
+  RubyController * controller;
+  Data_Get_Struct(self, RubyController, controller);
+  return INT2NUM(controller->getListener()->getFramePipes()[0]);
+}
+
+static VALUE focus_gained_fd(VALUE self) {
+  RubyController * controller;
+  Data_Get_Struct(self, RubyController, controller);
+  return INT2NUM(controller->getListener()->getFocusGainedPipes()[0]);
+}
+
+static VALUE focus_lost_fd(VALUE self) {
+  RubyController * controller;
+  Data_Get_Struct(self, RubyController, controller);
+  return INT2NUM(controller->getListener()->getFocusLostPipes()[0]);
+}
+
 static void dealloc_listener(void * listener)
 {
   delete reinterpret_cast<RubyListener*>(listener);
@@ -263,7 +325,6 @@ void Init_leap_motion()
 {
   mLeapMotion = rb_define_module("LeapMotion");
   cController = rb_define_class_under(mLeapMotion, "Controller", rb_cObject);
-  cListener = rb_define_class_under(mLeapMotion, "Listener", rb_cObject);
   cFrame = rb_define_class_under(mLeapMotion, "Frame", rb_cObject);
 
   rb_define_alloc_func(cController, allocate);
@@ -273,8 +334,12 @@ void Init_leap_motion()
   rb_define_method(cController, "frame", (ruby_method_vararg *)frame, 0);
   rb_define_private_method(cController, "listen!", (ruby_method_vararg *)listen, 0);
   rb_define_private_method(cController, "unlisten!", (ruby_method_vararg *)unlisten, 0);
-
-  rb_define_alloc_func(cListener, allocate_listener);
+  rb_define_private_method(cController, "init_fd", (ruby_method_vararg *)init_fd, 0);
+  rb_define_private_method(cController, "connect_fd", (ruby_method_vararg *)connect_fd, 0);
+  rb_define_private_method(cController, "disconnect_fd", (ruby_method_vararg *)disconnect_fd, 0);
+  rb_define_private_method(cController, "frame_fd", (ruby_method_vararg *)frame_fd, 0);
+  rb_define_private_method(cController, "focus_gained_fd", (ruby_method_vararg *)focus_gained_fd, 0);
+  rb_define_private_method(cController, "focus_lost_fd", (ruby_method_vararg *)focus_lost_fd, 0);
 
   rb_define_method(cFrame, "valid?", (ruby_method_vararg *)valid_p, 0);
   rb_define_method(cFrame, "id", (ruby_method_vararg *)frame_id, 0);
