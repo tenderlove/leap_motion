@@ -2,7 +2,6 @@
 
 VALUE mLeapMotion;
 VALUE cController;
-VALUE cFrame;
 
 ID on_init;
 ID on_connect;
@@ -11,8 +10,6 @@ ID on_exit;
 ID on_frame;
 ID on_focus_gained;
 ID on_focus_lost;
-
-typedef VALUE (ruby_method_vararg)(...);
 
 class RubyListener : public Leap::Listener {
   public:
@@ -172,6 +169,11 @@ static VALUE policy_flags(VALUE self)
   return INT2NUM(controller->getController()->policyFlags());
 }
 
+static void frame_dealloc(void * frame)
+{
+  delete reinterpret_cast<Leap::Frame*>(frame);
+}
+
 static VALUE frame(VALUE self)
 {
   RubyController * controller;
@@ -183,7 +185,7 @@ static VALUE frame(VALUE self)
   f = controller->getController()->frame(0);
   copy = new Leap::Frame(f);
 
-  return Data_Wrap_Struct(cFrame, 0, 0, copy);
+  return Data_Wrap_Struct(cFrame, 0, frame_dealloc, copy);
 }
 
 static VALUE listen(VALUE self)
@@ -267,65 +269,10 @@ static VALUE allocate_listener(VALUE klass)
   return rbobj;
 }
 
-static VALUE valid_p(VALUE self)
-{
-  Leap::Frame * f;
-
-  Data_Get_Struct(self, Leap::Frame, f);
-
-  if (true == f->isValid()) {
-    return Qtrue;
-  }
-
-  return Qfalse;
-}
-
-static VALUE frame_id(VALUE self)
-{
-  Leap::Frame * f;
-
-  Data_Get_Struct(self, Leap::Frame, f);
-
-  return INT2NUM(f->id());
-}
-
-static VALUE frame_timestamp(VALUE self)
-{
-  Leap::Frame * f;
-
-  Data_Get_Struct(self, Leap::Frame, f);
-
-  return INT2NUM(f->timestamp());
-}
-
-static VALUE frame_invalid(VALUE self)
-{
-  Leap::Frame * f;
-  Leap::Frame * invalid;
-
-  Data_Get_Struct(self, Leap::Frame, f);
-
-  invalid = new Leap::Frame(f->invalid());
-
-  return Data_Wrap_Struct(cFrame, 0, 0, invalid);
-}
-
-static VALUE frame_to_s(VALUE self)
-{
-  Leap::Frame * f;
-  const char * string;
-
-  Data_Get_Struct(self, Leap::Frame, f);
-
-  string = f->toString().c_str();
-  return rb_str_new2(string);
-}
-
 void Init_leap_motion()
 {
   mLeapMotion = rb_define_module("LeapMotion");
   cController = rb_define_class_under(mLeapMotion, "Controller", rb_cObject);
-  cFrame = rb_define_class_under(mLeapMotion, "Frame", rb_cObject);
 
   rb_define_alloc_func(cController, allocate);
   rb_define_method(cController, "connected?", (ruby_method_vararg *)connected_p, 0);
@@ -341,11 +288,8 @@ void Init_leap_motion()
   rb_define_private_method(cController, "focus_gained_fd", (ruby_method_vararg *)focus_gained_fd, 0);
   rb_define_private_method(cController, "focus_lost_fd", (ruby_method_vararg *)focus_lost_fd, 0);
 
-  rb_define_method(cFrame, "valid?", (ruby_method_vararg *)valid_p, 0);
-  rb_define_method(cFrame, "id", (ruby_method_vararg *)frame_id, 0);
-  rb_define_method(cFrame, "timestamp", (ruby_method_vararg *)frame_timestamp, 0);
-  rb_define_method(cFrame, "invalid", (ruby_method_vararg *)frame_invalid, 0);
-  rb_define_method(cFrame, "to_s", (ruby_method_vararg *)frame_to_s, 0);
+  Init_leap_frame();
+
 
   on_init = rb_intern("on_init");
   on_connect = rb_intern("on_connect");
