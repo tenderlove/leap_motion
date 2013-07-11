@@ -22,7 +22,7 @@ module LeapMotion
     def add_listener listener
       @mutex.synchronize do
         return false if @listeners.include? listener
-        @listeners << listener
+        @listeners = @listeners.dup.add listener
         listen!
       end
     end
@@ -30,7 +30,7 @@ module LeapMotion
     def remove_listener listener
       @mutex.synchronize do
         return false unless @listeners.include? listener
-        @listeners.delete listener
+        @listeners = @listeners.dup.delete listener
         unlisten! if @listeners.empty?
       end
     end
