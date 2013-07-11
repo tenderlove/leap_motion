@@ -81,6 +81,22 @@ static VALUE frontmost(VALUE self)
   return WrapHand(hand);
 }
 
+static VALUE each(VALUE self)
+{
+  Leap::HandList * list;
+  int i;
+
+  Data_Get_Struct(self, Leap::HandList, list);
+
+  for (i = 0; i < list->count(); i++) {
+    Leap::Hand * hand;
+    hand = new Leap::Hand((*list)[i]);
+    rb_yield(WrapHand(hand));
+  }
+
+  return self;
+}
+
 /** HAND **/
 
 static VALUE valid_p(VALUE self)
@@ -119,6 +135,7 @@ void Init_leap_hand()
   rb_define_method(cHandList, "leftmost", (ruby_method_vararg *)leftmost, 0);
   rb_define_method(cHandList, "rightmost", (ruby_method_vararg *)rightmost, 0);
   rb_define_method(cHandList, "frontmost", (ruby_method_vararg *)frontmost, 0);
+  rb_define_method(cHandList, "each", (ruby_method_vararg *)each, 0);
 
   cHand = rb_define_class_under(mLeapMotion, "Hand", rb_cObject);
   rb_define_method(cHand, "valid?", (ruby_method_vararg *)valid_p, 0);
