@@ -23,17 +23,6 @@ VALUE WrapFinger(Leap::Finger * finger)
   return Data_Wrap_Struct(cFinger, 0, finger_dealloc, finger);
 }
 
-#define ListCountImpl(rbklass, klass) \
-  static VALUE rb_##rbklass##_count(VALUE self) \
-{ \
-  klass * list; \
-  Data_Get_Struct(self, klass, list); \
-  return INT2NUM(list->count()); \
-}
-
-#define ListCountDecl(rbklass, klass) \
-  rb_define_method(rbklass, "count", (ruby_method_vararg *)rb_##rbklass##_count, 0);
-
 ListCountImpl(cFingerList, Leap::FingerList);
 
 static VALUE empty_p(VALUE self)

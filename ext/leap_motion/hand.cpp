@@ -23,14 +23,7 @@ VALUE WrapHand(Leap::Hand * hand)
   return Data_Wrap_Struct(cHand, 0, hand_dealloc, hand);
 }
 
-static VALUE count(VALUE self)
-{
-  Leap::HandList * list;
-
-  Data_Get_Struct(self, Leap::HandList, list);
-
-  return INT2NUM(list->count());
-}
+ListCountImpl(cHandList, Leap::HandList);
 
 static VALUE empty_p(VALUE self)
 {
@@ -174,7 +167,7 @@ static VALUE hand_to_s(VALUE self)
 void Init_leap_hand()
 {
   cHandList = rb_define_class_under(mLeapMotion, "HandList", rb_cObject);
-  rb_define_method(cHandList, "count", (ruby_method_vararg *)count, 0);
+  ListCountDecl(cHandList, Leap::HandList);
   rb_define_method(cHandList, "empty?", (ruby_method_vararg *)empty_p, 0);
   rb_define_method(cHandList, "leftmost", (ruby_method_vararg *)leftmost, 0);
   rb_define_method(cHandList, "rightmost", (ruby_method_vararg *)rightmost, 0);
