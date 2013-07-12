@@ -24,19 +24,7 @@ VALUE WrapFinger(Leap::Finger * finger)
 }
 
 ListCountImpl(cFingerList, Leap::FingerList);
-
-static VALUE empty_p(VALUE self)
-{
-  Leap::FingerList * list;
-
-  Data_Get_Struct(self, Leap::FingerList, list);
-
-  if (list->isEmpty()) {
-    return Qtrue;
-  }
-
-  return Qfalse;
-}
+ListEmptyImpl(cFingerList, Leap::FingerList);
 
 static VALUE leftmost(VALUE self)
 {
@@ -130,8 +118,8 @@ void Init_leap_finger()
   cFingerList = rb_define_class_under(mLeapMotion, "FingerList", rb_cObject);
 
   ListCountDecl(cFingerList, Leap::FingerList);
+  ListEmptyDecl(cFingerList, Leap::FingerList);
 
-  rb_define_method(cFingerList, "empty?", (ruby_method_vararg *)empty_p, 0);
   rb_define_method(cFingerList, "leftmost", (ruby_method_vararg *)leftmost, 0);
   rb_define_method(cFingerList, "rightmost", (ruby_method_vararg *)rightmost, 0);
   rb_define_method(cFingerList, "frontmost", (ruby_method_vararg *)frontmost, 0);

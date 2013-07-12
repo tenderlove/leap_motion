@@ -25,6 +25,20 @@ extern "C" void Init_leap_finger(void);
 #define ListCountDecl(rbklass, klass) \
   rb_define_method(rbklass, "count", (ruby_method_vararg *)rb_##rbklass##_count, 0);
 
+#define ListEmptyImpl(rbklass, klass) \
+  static VALUE rb_##rbklass##_empty_p(VALUE self) \
+{ \
+  klass * list; \
+  Data_Get_Struct(self, klass, list); \
+  if (list->isEmpty()) { \
+    return Qtrue; \
+  } \
+  return Qfalse; \
+}
+
+#define ListEmptyDecl(rbklass, klass) \
+  rb_define_method(rbklass, "empty?", (ruby_method_vararg *)rb_##rbklass##_empty_p, 0);
+
 
 VALUE WrapFrame(Leap::Frame * f);
 VALUE WrapHandList(Leap::HandList * hl);

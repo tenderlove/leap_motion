@@ -24,19 +24,7 @@ VALUE WrapHand(Leap::Hand * hand)
 }
 
 ListCountImpl(cHandList, Leap::HandList);
-
-static VALUE empty_p(VALUE self)
-{
-  Leap::HandList * list;
-
-  Data_Get_Struct(self, Leap::HandList, list);
-
-  if (list->isEmpty()) {
-    return Qtrue;
-  }
-
-  return Qfalse;
-}
+ListEmptyImpl(cHandList, Leap::HandList);
 
 static VALUE leftmost(VALUE self)
 {
@@ -168,7 +156,7 @@ void Init_leap_hand()
 {
   cHandList = rb_define_class_under(mLeapMotion, "HandList", rb_cObject);
   ListCountDecl(cHandList, Leap::HandList);
-  rb_define_method(cHandList, "empty?", (ruby_method_vararg *)empty_p, 0);
+  ListEmptyDecl(cHandList, Leap::HandList);
   rb_define_method(cHandList, "leftmost", (ruby_method_vararg *)leftmost, 0);
   rb_define_method(cHandList, "rightmost", (ruby_method_vararg *)rightmost, 0);
   rb_define_method(cHandList, "frontmost", (ruby_method_vararg *)frontmost, 0);
