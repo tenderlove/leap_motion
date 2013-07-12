@@ -108,6 +108,30 @@ static VALUE finger_to_s(VALUE self)
   return rb_str_new2(string);
 }
 
+static VALUE finger_id(VALUE self)
+{
+  Leap::Finger * finger;
+  const char * string;
+
+  Data_Get_Struct(self, Leap::Finger, finger);
+
+  return INT2NUM(finger->id());
+}
+
+static VALUE finger_eql(VALUE self, VALUE other)
+{
+  Leap::Finger * finger;
+  Leap::Finger * other_finger;
+
+  Data_Get_Struct(self, Leap::Finger, finger);
+  Data_Get_Struct(other, Leap::Finger, other_finger);
+
+  if (*finger == *other_finger) {
+    return Qtrue;
+  }
+  return Qfalse;
+}
+
 void Init_leap_finger()
 {
   cFingerList = rb_define_class_under(mLeapMotion, "FingerList", rb_cObject);
@@ -120,4 +144,6 @@ void Init_leap_finger()
 
   cFinger = rb_define_class_under(mLeapMotion, "Finger", rb_cObject);
   rb_define_method(cFinger, "to_s", (ruby_method_vararg *)finger_to_s, 0);
+  rb_define_method(cFinger, "id", (ruby_method_vararg *)finger_id, 0);
+  rb_define_method(cFinger, "==", (ruby_method_vararg *)finger_eql, 1);
 }

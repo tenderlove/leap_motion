@@ -148,6 +148,18 @@ static VALUE fingers(VALUE self)
   return WrapFingerList(list);
 }
 
+static VALUE finger(VALUE self, VALUE index)
+{
+  Leap::Hand * hand;
+  Leap::Finger * finger;
+
+  Data_Get_Struct(self, Leap::Hand, hand);
+
+  finger = new Leap::Finger(hand->finger(NUM2INT(index)));
+
+  return WrapFinger(finger);
+}
+
 static VALUE hand_to_s(VALUE self)
 {
   Leap::Hand * f;
@@ -174,5 +186,6 @@ void Init_leap_hand()
   rb_define_method(cHand, "==", (ruby_method_vararg *)hand_eql, 1);
   rb_define_method(cHand, "id", (ruby_method_vararg *)hand_id, 0);
   rb_define_method(cHand, "fingers", (ruby_method_vararg *)fingers, 0);
+  rb_define_method(cHand, "finger", (ruby_method_vararg *)finger, 1);
   rb_define_method(cHand, "to_s", (ruby_method_vararg *)hand_to_s, 0);
 }
