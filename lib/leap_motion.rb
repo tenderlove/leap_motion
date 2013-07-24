@@ -94,4 +94,17 @@ module LeapMotion
   class Listener
     include Events
   end
+
+  class Vector
+    UP       = new 0, 1, 0
+    DOWN     = new 0, -1, 0
+    FORWARD  = new 0, 0, -1
+    BACKWARD = new 0, 0, 1
+    LEFT     = new(-1, 0, 0)
+    RIGHT    = new 1, 0, 0
+    X_AXIS   = new 1, 0, 0
+    Y_AXIS   = new 0, 1, 0
+    Z_AXIS   = new 0, 0, 1
+    ZERO     = new 0, 0, 0
+  end
 end
