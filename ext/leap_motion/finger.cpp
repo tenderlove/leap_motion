@@ -113,6 +113,18 @@ static VALUE finger_eql(VALUE self, VALUE other)
   return Qfalse;
 }
 
+static VALUE hand(VALUE self)
+{
+  Leap::Finger * finger;
+  Leap::Hand * hand;
+
+  Data_Get_Struct(self, Leap::Finger, finger);
+
+  hand = new Leap::Hand(finger->hand());
+
+  return WrapHand(hand);
+}
+
 void Init_leap_finger()
 {
   cFingerList = rb_define_class_under(mLeapMotion, "FingerList", rb_cObject);
@@ -129,4 +141,5 @@ void Init_leap_finger()
   rb_define_method(cFinger, "to_s", (ruby_method_vararg *)finger_to_s, 0);
   rb_define_method(cFinger, "id", (ruby_method_vararg *)finger_id, 0);
   rb_define_method(cFinger, "==", (ruby_method_vararg *)finger_eql, 1);
+  rb_define_method(cFinger, "hand", (ruby_method_vararg *)hand, 0);
 }

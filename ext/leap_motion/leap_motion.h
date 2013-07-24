@@ -42,6 +42,7 @@ extern "C" void Init_leap_finger(void);
 
 VALUE WrapFrame(Leap::Frame * f);
 VALUE WrapHandList(Leap::HandList * hl);
+VALUE WrapHand(Leap::Hand * h);
 VALUE WrapFingerList(Leap::FingerList * hl);
 VALUE WrapFinger(Leap::Finger * finger);
 
