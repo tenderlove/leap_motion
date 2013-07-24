@@ -78,6 +78,20 @@ static VALUE frame_hands(VALUE self)
   return WrapHandList(list);
 }
 
+static VALUE frame_eql(VALUE self, VALUE other)
+{
+  Leap::Frame * frame;
+  Leap::Frame * other_frame;
+
+  Data_Get_Struct(self, Leap::Frame, frame);
+  Data_Get_Struct(other, Leap::Frame, other_frame);
+
+  if (*frame == *other_frame) {
+    return Qtrue;
+  }
+  return Qfalse;
+}
+
 void Init_leap_frame()
 {
   cFrame = rb_define_class_under(mLeapMotion, "Frame", rb_cObject);
@@ -88,4 +102,5 @@ void Init_leap_frame()
   rb_define_method(cFrame, "invalid", (ruby_method_vararg *)frame_invalid, 0);
   rb_define_method(cFrame, "to_s", (ruby_method_vararg *)frame_to_s, 0);
   rb_define_method(cFrame, "hands", (ruby_method_vararg *)frame_hands, 0);
+  rb_define_method(cFrame, "==", (ruby_method_vararg *)frame_eql, 1);
 }
