@@ -125,6 +125,24 @@ static VALUE hand(VALUE self)
   return WrapHand(hand);
 }
 
+static VALUE length(VALUE self)
+{
+  Leap::Finger * finger;
+
+  Data_Get_Struct(self, Leap::Finger, finger);
+
+  return DBL2NUM(finger->length());
+}
+
+static VALUE width(VALUE self)
+{
+  Leap::Finger * finger;
+
+  Data_Get_Struct(self, Leap::Finger, finger);
+
+  return DBL2NUM(finger->width());
+}
+
 void Init_leap_finger()
 {
   cFingerList = rb_define_class_under(mLeapMotion, "FingerList", rb_cObject);
@@ -142,4 +160,6 @@ void Init_leap_finger()
   rb_define_method(cFinger, "id", (ruby_method_vararg *)finger_id, 0);
   rb_define_method(cFinger, "==", (ruby_method_vararg *)finger_eql, 1);
   rb_define_method(cFinger, "hand", (ruby_method_vararg *)hand, 0);
+  rb_define_method(cFinger, "length", (ruby_method_vararg *)length, 0);
+  rb_define_method(cFinger, "width", (ruby_method_vararg *)width, 0);
 }
