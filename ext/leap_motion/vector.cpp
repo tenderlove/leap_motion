@@ -39,6 +39,17 @@ static VALUE z(VALUE self)
   return DBL2NUM(vector->z);
 }
 
+static VALUE to_s(VALUE self)
+{
+  Leap::Vector * vector;
+  const char * string;
+
+  Data_Get_Struct(self, Leap::Vector, vector);
+
+  string = vector->toString().c_str();
+  return rb_str_new2(string);
+}
+
 void Init_leap_vector()
 {
   cVector = rb_define_class_under(mLeapMotion, "Vector", rb_cObject);
@@ -46,4 +57,5 @@ void Init_leap_vector()
   rb_define_method(cVector, "x", (ruby_method_vararg *)x, 0);
   rb_define_method(cVector, "y", (ruby_method_vararg *)y, 0);
   rb_define_method(cVector, "z", (ruby_method_vararg *)z, 0);
+  rb_define_method(cVector, "to_s", (ruby_method_vararg *)to_s, 0);
 }
