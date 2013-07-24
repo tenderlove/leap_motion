@@ -13,6 +13,7 @@ extern "C" void Init_leap_motion(void);
 extern "C" void Init_leap_frame(void);
 extern "C" void Init_leap_hand(void);
 extern "C" void Init_leap_finger(void);
+extern "C" void Init_leap_vector(void);
 
 #define ListCountImpl(rbklass, klass) \
   static VALUE rb_##rbklass##_count(VALUE self) \
@@ -45,4 +46,5 @@ VALUE WrapHandList(Leap::HandList * hl);
 VALUE WrapHand(Leap::Hand * h);
 VALUE WrapFingerList(Leap::FingerList * hl);
 VALUE WrapFinger(Leap::Finger * finger);
+VALUE WrapVector(Leap::Vector * v);
 

@@ -281,6 +281,7 @@ void Init_leap_motion()
   rb_define_private_method(cController, "focus_gained_fd", (ruby_method_vararg *)focus_gained_fd, 0);
   rb_define_private_method(cController, "focus_lost_fd", (ruby_method_vararg *)focus_lost_fd, 0);
 
+  Init_leap_vector();
   Init_leap_frame();
   Init_leap_hand();
   Init_leap_finger();

@@ -143,6 +143,18 @@ static VALUE width(VALUE self)
   return DBL2NUM(finger->width());
 }
 
+static VALUE tip_position(VALUE self)
+{
+  Leap::Finger * finger;
+  Leap::Vector * vector;
+
+  Data_Get_Struct(self, Leap::Finger, finger);
+
+  vector = new Leap::Vector(finger->tipPosition());
+
+  return WrapVector(vector);
+}
+
 void Init_leap_finger()
 {
   cFingerList = rb_define_class_under(mLeapMotion, "FingerList", rb_cObject);
@@ -162,4 +174,5 @@ void Init_leap_finger()
   rb_define_method(cFinger, "hand", (ruby_method_vararg *)hand, 0);
   rb_define_method(cFinger, "length", (ruby_method_vararg *)length, 0);
   rb_define_method(cFinger, "width", (ruby_method_vararg *)width, 0);
+  rb_define_method(cFinger, "tip_position", (ruby_method_vararg *)tip_position, 0);
 }
