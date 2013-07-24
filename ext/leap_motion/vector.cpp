@@ -70,6 +70,21 @@ static VALUE init(VALUE self, VALUE x, VALUE y, VALUE z)
   return self;
 }
 
+static VALUE eql(VALUE self, VALUE other)
+{
+  Leap::Vector * vector;
+  Leap::Vector * other_vector;
+
+  Data_Get_Struct(self, Leap::Vector, vector);
+  Data_Get_Struct(other, Leap::Vector, other_vector);
+
+  if (*vector == *other_vector) {
+    return Qtrue;
+  }
+
+  return Qfalse;
+}
+
 void Init_leap_vector()
 {
   cVector = rb_define_class_under(mLeapMotion, "Vector", rb_cObject);
@@ -82,4 +97,5 @@ void Init_leap_vector()
   rb_define_method(cVector, "y", (ruby_method_vararg *)y, 0);
   rb_define_method(cVector, "z", (ruby_method_vararg *)z, 0);
   rb_define_method(cVector, "to_s", (ruby_method_vararg *)to_s, 0);
+  rb_define_method(cVector, "==", (ruby_method_vararg *)eql, 1);
 }
