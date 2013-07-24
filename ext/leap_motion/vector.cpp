@@ -12,6 +12,13 @@ VALUE WrapVector(Leap::Vector * v)
   return Data_Wrap_Struct(cVector, 0, dealloc, v);
 }
 
+static VALUE allocate(VALUE klass)
+{
+  Leap::Vector * v = new Leap::Vector();
+
+  return WrapVector(v);
+}
+
 static VALUE x(VALUE self)
 {
   Leap::Vector * vector;
@@ -50,9 +57,26 @@ static VALUE to_s(VALUE self)
   return rb_str_new2(string);
 }
 
+static VALUE init(VALUE self, VALUE x, VALUE y, VALUE z)
+{
+  Leap::Vector * vector;
+
+  Data_Get_Struct(self, Leap::Vector, vector);
+
+  vector->x = NUM2DBL(x);
+  vector->y = NUM2DBL(y);
+  vector->z = NUM2DBL(z);
+
+  return self;
+}
+
 void Init_leap_vector()
 {
   cVector = rb_define_class_under(mLeapMotion, "Vector", rb_cObject);
+
+  rb_define_alloc_func(cVector, allocate);
+
+  rb_define_method(cVector, "initialize", (ruby_method_vararg *)init, 3);
 
   rb_define_method(cVector, "x", (ruby_method_vararg *)x, 0);
   rb_define_method(cVector, "y", (ruby_method_vararg *)y, 0);

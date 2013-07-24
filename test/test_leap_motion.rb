@@ -2,7 +2,7 @@ require 'minitest/autorun'
 require 'leap_motion'
 require 'monitor'
 
-class TestLeapMotion < MiniTest::Unit::TestCase
+class TestLeapMotion < MiniTest::Test
   attr_reader :controller
 
   def setup
