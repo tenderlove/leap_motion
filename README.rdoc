@@ -32,8 +32,10 @@ Wrapper around the C++ api for Leap Motion.
 
 1. Download a copy of the Leap SDK
 2. Put the LeakSDK directory under ext
-3. `rake compile`
-5. Hack away
+3. `bundle`
+4. `rake compile`
+5. `rake test`
+6. Hack away
 
 == LICENSE:
 
