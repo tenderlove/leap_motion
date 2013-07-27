@@ -26,6 +26,14 @@ module LeapMotion
       assert Vector::ZERO.magnitude
     end
 
+    def test_magnitude_squared
+      assert Vector::ZERO.magnitude_squared
+    end
+
+    def test_distance_to
+      assert Vector::ZERO.distance_to(Vector::X_AXIS)
+    end
+
     def test_zero
       assert_equal Vector.new(0,0,0), Vector::ZERO
     end

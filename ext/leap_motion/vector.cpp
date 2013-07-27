@@ -94,6 +94,26 @@ static VALUE magnitude(VALUE self)
   return DBL2NUM(vector->magnitude());
 }
 
+static VALUE magnitude_squared(VALUE self)
+{
+  Leap::Vector * vector;
+
+  Data_Get_Struct(self, Leap::Vector, vector);
+
+  return DBL2NUM(vector->magnitudeSquared());
+}
+
+static VALUE distance_to(VALUE self, VALUE other)
+{
+  Leap::Vector * vector;
+  Leap::Vector * other_vector;
+
+  Data_Get_Struct(self, Leap::Vector, vector);
+  Data_Get_Struct(other, Leap::Vector, other_vector);
+
+  return DBL2NUM(vector->distanceTo(*other_vector));
+}
+
 void Init_leap_vector()
 {
   cVector = rb_define_class_under(mLeapMotion, "Vector", rb_cObject);
@@ -108,4 +128,6 @@ void Init_leap_vector()
   rb_define_method(cVector, "to_s", (ruby_method_vararg *)to_s, 0);
   rb_define_method(cVector, "==", (ruby_method_vararg *)eql, 1);
   rb_define_method(cVector, "magnitude", (ruby_method_vararg *)magnitude, 0);
+  rb_define_method(cVector, "magnitude_squared", (ruby_method_vararg *)magnitude_squared, 0);
+  rb_define_method(cVector, "distance_to", (ruby_method_vararg *)distance_to, 1);
 }
