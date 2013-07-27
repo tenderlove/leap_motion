@@ -8,12 +8,14 @@ typedef VALUE (ruby_method_vararg)(...);
 
 extern VALUE mLeapMotion;
 extern VALUE cController;
+extern VALUE cPointable;
 
 extern "C" void Init_leap_motion(void);
 extern "C" void Init_leap_frame(void);
 extern "C" void Init_leap_hand(void);
 extern "C" void Init_leap_finger(void);
 extern "C" void Init_leap_vector(void);
+extern "C" void Init_leap_pointable(void);
 
 #define ListCountImpl(rbklass, klass) \
   static VALUE rb_##rbklass##_count(VALUE self) \
