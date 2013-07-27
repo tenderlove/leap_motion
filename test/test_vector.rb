@@ -54,6 +54,10 @@ module LeapMotion
       assert Vector::Y_AXIS.dot(Vector::X_AXIS)
     end
 
+    def test_cross
+      assert_equal Vector::ZERO, Vector::X_AXIS.cross(Vector::ZERO)
+    end
+
     def test_zero
       assert_equal Vector.new(0,0,0), Vector::ZERO
     end

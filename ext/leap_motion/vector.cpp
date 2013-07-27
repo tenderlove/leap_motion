@@ -163,6 +163,20 @@ static VALUE dot(VALUE self, VALUE other)
   return DBL2NUM(vector->dot(*other_vector));
 }
 
+static VALUE cross(VALUE self, VALUE other)
+{
+  Leap::Vector * vector;
+  Leap::Vector * other_vector;
+  Leap::Vector * new_vector;
+
+  Data_Get_Struct(self, Leap::Vector, vector);
+  Data_Get_Struct(other, Leap::Vector, other_vector);
+
+  new_vector = new Leap::Vector(vector->cross(*other_vector));
+
+  return WrapVector(new_vector);
+}
+
 void Init_leap_vector()
 {
   cVector = rb_define_class_under(mLeapMotion, "Vector", rb_cObject);
@@ -184,4 +198,5 @@ void Init_leap_vector()
   rb_define_method(cVector, "yaw", (ruby_method_vararg *)yaw, 0);
   rb_define_method(cVector, "roll", (ruby_method_vararg *)roll, 0);
   rb_define_method(cVector, "dot", (ruby_method_vararg *)dot, 1);
+  rb_define_method(cVector, "cross", (ruby_method_vararg *)cross, 1);
 }
