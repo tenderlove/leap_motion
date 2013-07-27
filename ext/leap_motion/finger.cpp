@@ -237,7 +237,7 @@ void Init_leap_finger()
   rb_define_method(cFinger, "tip_position", (ruby_method_vararg *)tip_position, 0);
   rb_define_method(cFinger, "tip_velocity", (ruby_method_vararg *)tip_velocity, 0);
   rb_define_method(cFinger, "direction", (ruby_method_vararg *)direction, 0);
-  rb_define_method(cFinger, "finger_p", (ruby_method_vararg *)finger_p, 0);
-  rb_define_method(cFinger, "tool_p", (ruby_method_vararg *)tool_p, 0);
-  rb_define_method(cFinger, "valid_p", (ruby_method_vararg *)valid_p, 0);
+  rb_define_method(cFinger, "finger?", (ruby_method_vararg *)finger_p, 0);
+  rb_define_method(cFinger, "tool?", (ruby_method_vararg *)tool_p, 0);
+  rb_define_method(cFinger, "valid?", (ruby_method_vararg *)valid_p, 0);
 }
