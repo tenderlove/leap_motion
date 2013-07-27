@@ -215,6 +215,45 @@ static VALUE valid_p(VALUE self)
   return Qfalse;
 }
 
+static VALUE touch_zone(VALUE self)
+{
+  Leap::Finger * finger;
+
+  Data_Get_Struct(self, Leap::Finger, finger);
+
+  switch(finger->touchZone()) {
+    case(Leap::Pointable::ZONE_NONE):
+      return ID2SYM(rb_intern("none"));
+    case(Leap::Pointable::ZONE_HOVERING):
+      return ID2SYM(rb_intern("hovering"));
+    case(Leap::Pointable::ZONE_TOUCHING):
+      return ID2SYM(rb_intern("touching"));
+  };
+
+  return Qfalse;
+}
+
+static VALUE touch_distance(VALUE self)
+{
+  Leap::Finger * finger;
+
+  Data_Get_Struct(self, Leap::Finger, finger);
+
+  return DBL2NUM(finger->touchDistance());
+}
+
+static VALUE stabilized_tip_position(VALUE self)
+{
+  Leap::Finger * finger;
+  Leap::Vector * vector;
+
+  Data_Get_Struct(self, Leap::Finger, finger);
+
+  vector = new Leap::Vector(finger->stabilizedTipPosition());
+
+  return WrapVector(vector);
+}
+
 void Init_leap_finger()
 {
   cFingerList = rb_define_class_under(mLeapMotion, "FingerList", rb_cObject);
@@ -240,4 +279,7 @@ void Init_leap_finger()
   rb_define_method(cFinger, "finger?", (ruby_method_vararg *)finger_p, 0);
   rb_define_method(cFinger, "tool?", (ruby_method_vararg *)tool_p, 0);
   rb_define_method(cFinger, "valid?", (ruby_method_vararg *)valid_p, 0);
+  rb_define_method(cFinger, "touch_zone", (ruby_method_vararg *)touch_zone, 0);
+  rb_define_method(cFinger, "touch_distance", (ruby_method_vararg *)touch_distance, 0);
+  rb_define_method(cFinger, "stabilized_tip_position", (ruby_method_vararg *)stabilized_tip_position, 0);
 }
