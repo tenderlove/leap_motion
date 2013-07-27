@@ -85,6 +85,15 @@ static VALUE eql(VALUE self, VALUE other)
   return Qfalse;
 }
 
+static VALUE magnitude(VALUE self)
+{
+  Leap::Vector * vector;
+
+  Data_Get_Struct(self, Leap::Vector, vector);
+
+  return DBL2NUM(vector->magnitude());
+}
+
 void Init_leap_vector()
 {
   cVector = rb_define_class_under(mLeapMotion, "Vector", rb_cObject);
@@ -98,4 +107,5 @@ void Init_leap_vector()
   rb_define_method(cVector, "z", (ruby_method_vararg *)z, 0);
   rb_define_method(cVector, "to_s", (ruby_method_vararg *)to_s, 0);
   rb_define_method(cVector, "==", (ruby_method_vararg *)eql, 1);
+  rb_define_method(cVector, "magnitude", (ruby_method_vararg *)magnitude, 0);
 }

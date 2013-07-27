@@ -22,6 +22,10 @@ module LeapMotion
       refute_equal v1, v2
     end
 
+    def test_magnitude
+      assert Vector::ZERO.magnitude
+    end
+
     def test_zero
       assert_equal Vector.new(0,0,0), Vector::ZERO
     end
