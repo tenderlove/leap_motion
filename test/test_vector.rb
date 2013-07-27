@@ -63,6 +63,30 @@ module LeapMotion
       assert_kind_of Vector, v.normalized
     end
 
+    def test_negate
+      v = Vector.new 1, 2, 3
+      z = -v
+      assert_equal(-1, z.x)
+      assert_equal(-2, z.y)
+      assert_equal(-3, z.z)
+    end
+
+    def test_add
+      assert_kind_of(Vector, Vector::X_AXIS + Vector::Y_AXIS)
+    end
+
+    def test_subtract
+      assert_kind_of(Vector, Vector::X_AXIS - Vector::Y_AXIS)
+    end
+
+    def test_multiply
+      assert_kind_of(Vector, Vector::X_AXIS * 10)
+    end
+
+    def test_divide
+      assert_kind_of(Vector, Vector::X_AXIS / 2)
+    end
+
     def test_zero
       assert_equal Vector.new(0,0,0), Vector::ZERO
     end

@@ -189,6 +189,70 @@ static VALUE normalized(VALUE self)
   return WrapVector(new_vector);
 }
 
+static VALUE negate(VALUE self)
+{
+  Leap::Vector * vector;
+  Leap::Vector * new_vector;
+
+  Data_Get_Struct(self, Leap::Vector, vector);
+
+  new_vector = new Leap::Vector(-(*vector));
+
+  return WrapVector(new_vector);
+}
+
+static VALUE add(VALUE self, VALUE other)
+{
+  Leap::Vector * vector;
+  Leap::Vector * other_vector;
+  Leap::Vector * new_vector;
+
+  Data_Get_Struct(self, Leap::Vector, vector);
+  Data_Get_Struct(other, Leap::Vector, other_vector);
+
+  new_vector = new Leap::Vector(*vector + *other_vector);
+
+  return WrapVector(new_vector);
+}
+
+static VALUE subtract(VALUE self, VALUE other)
+{
+  Leap::Vector * vector;
+  Leap::Vector * other_vector;
+  Leap::Vector * new_vector;
+
+  Data_Get_Struct(self, Leap::Vector, vector);
+  Data_Get_Struct(other, Leap::Vector, other_vector);
+
+  new_vector = new Leap::Vector(*vector - *other_vector);
+
+  return WrapVector(new_vector);
+}
+
+static VALUE multiply(VALUE self, VALUE scalar)
+{
+  Leap::Vector * vector;
+  Leap::Vector * new_vector;
+
+  Data_Get_Struct(self, Leap::Vector, vector);
+
+  new_vector = new Leap::Vector(*vector * NUM2DBL(scalar));
+
+  return WrapVector(new_vector);
+}
+
+static VALUE divide(VALUE self, VALUE scalar)
+{
+  Leap::Vector * vector;
+  Leap::Vector * new_vector;
+
+  Data_Get_Struct(self, Leap::Vector, vector);
+
+  new_vector = new Leap::Vector(*vector / NUM2DBL(scalar));
+
+  return WrapVector(new_vector);
+}
+
 void Init_leap_vector()
 {
   cVector = rb_define_class_under(mLeapMotion, "Vector", rb_cObject);
@@ -212,4 +276,9 @@ void Init_leap_vector()
   rb_define_method(cVector, "dot", (ruby_method_vararg *)dot, 1);
   rb_define_method(cVector, "cross", (ruby_method_vararg *)cross, 1);
   rb_define_method(cVector, "normalized", (ruby_method_vararg *)normalized, 0);
+  rb_define_method(cVector, "-@", (ruby_method_vararg *)negate, 0);
+  rb_define_method(cVector, "+", (ruby_method_vararg *)add, 1);
+  rb_define_method(cVector, "-", (ruby_method_vararg *)subtract, 1);
+  rb_define_method(cVector, "*", (ruby_method_vararg *)multiply, 1);
+  rb_define_method(cVector, "/", (ruby_method_vararg *)divide, 1);
 }
