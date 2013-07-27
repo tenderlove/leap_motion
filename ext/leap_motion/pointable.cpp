@@ -26,7 +26,7 @@ VALUE WrapPointableList(Leap::PointableList * l)
 ListCountImpl(cPointableList, Leap::PointableList);
 ListEmptyImpl(cPointableList, Leap::PointableList);
 
-static VALUE MakePointable(Leap::Pointable pointable)
+VALUE MakePointable(Leap::Pointable pointable)
 {
   if (pointable.isFinger())
     return WrapFinger(new Leap::Finger(pointable));

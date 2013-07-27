@@ -50,4 +50,5 @@ VALUE WrapFingerList(Leap::FingerList * hl);
 VALUE WrapPointableList(Leap::PointableList * l);
 VALUE WrapFinger(Leap::Finger * finger);
 VALUE WrapVector(Leap::Vector * v);
+VALUE MakePointable(Leap::Pointable pointable);
 
