@@ -87,6 +87,23 @@ module LeapMotion
       assert_kind_of(Vector, Vector::X_AXIS / 2)
     end
 
+    def test_valid?
+      assert Vector::X_AXIS.valid?
+    end
+
+    def test_to_a
+      v = Vector.new 1, 2, 3
+      assert_equal [1,2,3], v.to_a
+    end
+
+    def test_index
+      v = Vector.new 1, 2, 3
+      assert_equal 1, v[0]
+      assert_equal 2, v[1]
+      assert_equal 3, v[2]
+      assert_equal 0, v[3]
+    end
+
     def test_zero
       assert_equal Vector.new(0,0,0), Vector::ZERO
     end

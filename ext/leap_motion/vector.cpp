@@ -253,6 +253,18 @@ static VALUE divide(VALUE self, VALUE scalar)
   return WrapVector(new_vector);
 }
 
+static VALUE valid_p(VALUE self, VALUE scalar)
+{
+  Leap::Vector * vector;
+
+  Data_Get_Struct(self, Leap::Vector, vector);
+
+  if (vector->isValid())
+    return Qtrue;
+
+  return Qfalse;
+}
+
 void Init_leap_vector()
 {
   cVector = rb_define_class_under(mLeapMotion, "Vector", rb_cObject);
@@ -281,4 +293,5 @@ void Init_leap_vector()
   rb_define_method(cVector, "-", (ruby_method_vararg *)subtract, 1);
   rb_define_method(cVector, "*", (ruby_method_vararg *)multiply, 1);
   rb_define_method(cVector, "/", (ruby_method_vararg *)divide, 1);
+  rb_define_method(cVector, "valid?", (ruby_method_vararg *)valid_p, 0);
 }

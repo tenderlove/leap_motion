@@ -106,5 +106,13 @@ module LeapMotion
     Y_AXIS   = new 0, 1, 0
     Z_AXIS   = new 0, 0, 1
     ZERO     = new 0, 0, 0
+
+    def to_a
+      [x, y, z]
+    end
+
+    def [] idx
+      to_a.fetch(idx, 0.0)
+    end
   end
 end
