@@ -134,6 +134,35 @@ static VALUE pitch(VALUE self)
   return DBL2NUM(vector->pitch());
 }
 
+static VALUE yaw(VALUE self)
+{
+  Leap::Vector * vector;
+
+  Data_Get_Struct(self, Leap::Vector, vector);
+
+  return DBL2NUM(vector->yaw());
+}
+
+static VALUE roll(VALUE self)
+{
+  Leap::Vector * vector;
+
+  Data_Get_Struct(self, Leap::Vector, vector);
+
+  return DBL2NUM(vector->roll());
+}
+
+static VALUE dot(VALUE self, VALUE other)
+{
+  Leap::Vector * vector;
+  Leap::Vector * other_vector;
+
+  Data_Get_Struct(self, Leap::Vector, vector);
+  Data_Get_Struct(other, Leap::Vector, other_vector);
+
+  return DBL2NUM(vector->dot(*other_vector));
+}
+
 void Init_leap_vector()
 {
   cVector = rb_define_class_under(mLeapMotion, "Vector", rb_cObject);
@@ -152,4 +181,7 @@ void Init_leap_vector()
   rb_define_method(cVector, "distance_to", (ruby_method_vararg *)distance_to, 1);
   rb_define_method(cVector, "angle_to", (ruby_method_vararg *)angle_to, 1);
   rb_define_method(cVector, "pitch", (ruby_method_vararg *)pitch, 0);
+  rb_define_method(cVector, "yaw", (ruby_method_vararg *)yaw, 0);
+  rb_define_method(cVector, "roll", (ruby_method_vararg *)roll, 0);
+  rb_define_method(cVector, "dot", (ruby_method_vararg *)dot, 1);
 }

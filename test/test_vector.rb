@@ -42,6 +42,18 @@ module LeapMotion
       assert Vector::Y_AXIS.pitch
     end
 
+    def test_yaw
+      assert Vector::Y_AXIS.yaw
+    end
+
+    def test_roll
+      assert Vector::Y_AXIS.roll
+    end
+
+    def test_dot
+      assert Vector::Y_AXIS.dot(Vector::X_AXIS)
+    end
+
     def test_zero
       assert_equal Vector.new(0,0,0), Vector::ZERO
     end
