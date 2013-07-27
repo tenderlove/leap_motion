@@ -155,6 +155,66 @@ static VALUE tip_position(VALUE self)
   return WrapVector(vector);
 }
 
+static VALUE tip_velocity(VALUE self)
+{
+  Leap::Finger * finger;
+  Leap::Vector * vector;
+
+  Data_Get_Struct(self, Leap::Finger, finger);
+
+  vector = new Leap::Vector(finger->tipVelocity());
+
+  return WrapVector(vector);
+}
+
+static VALUE direction(VALUE self)
+{
+  Leap::Finger * finger;
+  Leap::Vector * vector;
+
+  Data_Get_Struct(self, Leap::Finger, finger);
+
+  vector = new Leap::Vector(finger->direction());
+
+  return WrapVector(vector);
+}
+
+static VALUE finger_p(VALUE self)
+{
+  Leap::Finger * finger;
+
+  Data_Get_Struct(self, Leap::Finger, finger);
+
+  if (finger->isFinger())
+    return Qtrue;
+
+  return Qfalse;
+}
+
+static VALUE tool_p(VALUE self)
+{
+  Leap::Finger * finger;
+
+  Data_Get_Struct(self, Leap::Finger, finger);
+
+  if (finger->isTool())
+    return Qtrue;
+
+  return Qfalse;
+}
+
+static VALUE valid_p(VALUE self)
+{
+  Leap::Finger * finger;
+
+  Data_Get_Struct(self, Leap::Finger, finger);
+
+  if (finger->isValid())
+    return Qtrue;
+
+  return Qfalse;
+}
+
 void Init_leap_finger()
 {
   cFingerList = rb_define_class_under(mLeapMotion, "FingerList", rb_cObject);
@@ -175,4 +235,9 @@ void Init_leap_finger()
   rb_define_method(cFinger, "length", (ruby_method_vararg *)length, 0);
   rb_define_method(cFinger, "width", (ruby_method_vararg *)width, 0);
   rb_define_method(cFinger, "tip_position", (ruby_method_vararg *)tip_position, 0);
+  rb_define_method(cFinger, "tip_velocity", (ruby_method_vararg *)tip_velocity, 0);
+  rb_define_method(cFinger, "direction", (ruby_method_vararg *)direction, 0);
+  rb_define_method(cFinger, "finger_p", (ruby_method_vararg *)finger_p, 0);
+  rb_define_method(cFinger, "tool_p", (ruby_method_vararg *)tool_p, 0);
+  rb_define_method(cFinger, "valid_p", (ruby_method_vararg *)valid_p, 0);
 }
