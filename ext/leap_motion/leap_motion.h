@@ -47,6 +47,7 @@ VALUE WrapFrame(Leap::Frame * f);
 VALUE WrapHandList(Leap::HandList * hl);
 VALUE WrapHand(Leap::Hand * h);
 VALUE WrapFingerList(Leap::FingerList * hl);
+VALUE WrapPointableList(Leap::PointableList * l);
 VALUE WrapFinger(Leap::Finger * finger);
 VALUE WrapVector(Leap::Vector * v);
 

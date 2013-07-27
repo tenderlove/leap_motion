@@ -117,6 +117,18 @@ static VALUE hand_id(VALUE self)
   return INT2NUM(hand->id());
 }
 
+static VALUE pointables(VALUE self)
+{
+  Leap::Hand * hand;
+  Leap::PointableList * list;
+
+  Data_Get_Struct(self, Leap::Hand, hand);
+
+  list = new Leap::PointableList(hand->pointables());
+
+  return WrapPointableList(list);
+}
+
 static VALUE fingers(VALUE self)
 {
   Leap::Hand * hand;
@@ -168,5 +180,6 @@ void Init_leap_hand()
   rb_define_method(cHand, "id", (ruby_method_vararg *)hand_id, 0);
   rb_define_method(cHand, "fingers", (ruby_method_vararg *)fingers, 0);
   rb_define_method(cHand, "finger", (ruby_method_vararg *)finger, 1);
+  rb_define_method(cHand, "pointables", (ruby_method_vararg *)pointables, 0);
   rb_define_method(cHand, "to_s", (ruby_method_vararg *)hand_to_s, 0);
 }
