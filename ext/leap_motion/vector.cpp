@@ -177,6 +177,18 @@ static VALUE cross(VALUE self, VALUE other)
   return WrapVector(new_vector);
 }
 
+static VALUE normalized(VALUE self)
+{
+  Leap::Vector * vector;
+  Leap::Vector * new_vector;
+
+  Data_Get_Struct(self, Leap::Vector, vector);
+
+  new_vector = new Leap::Vector(vector->normalized());
+
+  return WrapVector(new_vector);
+}
+
 void Init_leap_vector()
 {
   cVector = rb_define_class_under(mLeapMotion, "Vector", rb_cObject);
@@ -199,4 +211,5 @@ void Init_leap_vector()
   rb_define_method(cVector, "roll", (ruby_method_vararg *)roll, 0);
   rb_define_method(cVector, "dot", (ruby_method_vararg *)dot, 1);
   rb_define_method(cVector, "cross", (ruby_method_vararg *)cross, 1);
+  rb_define_method(cVector, "normalized", (ruby_method_vararg *)normalized, 0);
 }

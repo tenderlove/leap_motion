@@ -58,6 +58,11 @@ module LeapMotion
       assert_equal Vector::ZERO, Vector::X_AXIS.cross(Vector::ZERO)
     end
 
+    def test_normalized
+      v = Vector.new(1,3,4)
+      assert_kind_of Vector, v.normalized
+    end
+
     def test_zero
       assert_equal Vector.new(0,0,0), Vector::ZERO
     end
