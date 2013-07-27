@@ -34,6 +34,14 @@ module LeapMotion
       assert Vector::ZERO.distance_to(Vector::X_AXIS)
     end
 
+    def test_angle_to
+      assert Vector::Y_AXIS.angle_to(Vector::X_AXIS)
+    end
+
+    def test_pitch
+      assert Vector::Y_AXIS.pitch
+    end
+
     def test_zero
       assert_equal Vector.new(0,0,0), Vector::ZERO
     end

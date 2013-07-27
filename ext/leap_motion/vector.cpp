@@ -114,6 +114,26 @@ static VALUE distance_to(VALUE self, VALUE other)
   return DBL2NUM(vector->distanceTo(*other_vector));
 }
 
+static VALUE angle_to(VALUE self, VALUE other)
+{
+  Leap::Vector * vector;
+  Leap::Vector * other_vector;
+
+  Data_Get_Struct(self, Leap::Vector, vector);
+  Data_Get_Struct(other, Leap::Vector, other_vector);
+
+  return DBL2NUM(vector->angleTo(*other_vector));
+}
+
+static VALUE pitch(VALUE self)
+{
+  Leap::Vector * vector;
+
+  Data_Get_Struct(self, Leap::Vector, vector);
+
+  return DBL2NUM(vector->pitch());
+}
+
 void Init_leap_vector()
 {
   cVector = rb_define_class_under(mLeapMotion, "Vector", rb_cObject);
@@ -130,4 +150,6 @@ void Init_leap_vector()
   rb_define_method(cVector, "magnitude", (ruby_method_vararg *)magnitude, 0);
   rb_define_method(cVector, "magnitude_squared", (ruby_method_vararg *)magnitude_squared, 0);
   rb_define_method(cVector, "distance_to", (ruby_method_vararg *)distance_to, 1);
+  rb_define_method(cVector, "angle_to", (ruby_method_vararg *)angle_to, 1);
+  rb_define_method(cVector, "pitch", (ruby_method_vararg *)pitch, 0);
 }
