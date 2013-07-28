@@ -3,7 +3,7 @@ require 'set'
 require 'thread'
 
 module LeapMotion
-  VERSION = '1.0.0'
+  VERSION = '1.0.1'
 
   class HandList;      include Enumerable; end
   class FingerList;    include Enumerable; end
