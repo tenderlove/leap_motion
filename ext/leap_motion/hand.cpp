@@ -196,6 +196,60 @@ static VALUE hand_to_s(VALUE self)
   return rb_str_new2(string);
 }
 
+static VALUE palm_position(VALUE self)
+{
+  Leap::Hand * f;
+
+  Data_Get_Struct(self, Leap::Hand, f);
+
+  return WrapVector(new Leap::Vector(f->palmPosition()));
+}
+
+static VALUE palm_velocity(VALUE self)
+{
+  Leap::Hand * f;
+
+  Data_Get_Struct(self, Leap::Hand, f);
+
+  return WrapVector(new Leap::Vector(f->palmVelocity()));
+}
+
+static VALUE palm_normal(VALUE self)
+{
+  Leap::Hand * f;
+
+  Data_Get_Struct(self, Leap::Hand, f);
+
+  return WrapVector(new Leap::Vector(f->palmNormal()));
+}
+
+static VALUE direction(VALUE self)
+{
+  Leap::Hand * f;
+
+  Data_Get_Struct(self, Leap::Hand, f);
+
+  return WrapVector(new Leap::Vector(f->direction()));
+}
+
+static VALUE sphere_center(VALUE self)
+{
+  Leap::Hand * f;
+
+  Data_Get_Struct(self, Leap::Hand, f);
+
+  return WrapVector(new Leap::Vector(f->sphereCenter()));
+}
+
+static VALUE sphere_radius(VALUE self)
+{
+  Leap::Hand * f;
+
+  Data_Get_Struct(self, Leap::Hand, f);
+
+  return DBL2NUM(f->sphereRadius());
+}
+
 void Init_leap_hand()
 {
   cHandList = rb_define_class_under(mLeapMotion, "HandList", rb_cObject);
@@ -216,5 +270,11 @@ void Init_leap_hand()
   rb_define_method(cHand, "pointable", (ruby_method_vararg *)pointable, 1);
   rb_define_method(cHand, "tools", (ruby_method_vararg *)tools, 0);
   rb_define_method(cHand, "tool", (ruby_method_vararg *)tool, 1);
+  rb_define_method(cHand, "palm_position", (ruby_method_vararg *)palm_position, 0);
+  rb_define_method(cHand, "palm_velocity", (ruby_method_vararg *)palm_velocity, 0);
+  rb_define_method(cHand, "palm_normal", (ruby_method_vararg *)palm_normal, 0);
+  rb_define_method(cHand, "direction", (ruby_method_vararg *)direction, 0);
+  rb_define_method(cHand, "sphere_center", (ruby_method_vararg *)sphere_center, 0);
+  rb_define_method(cHand, "sphere_radius", (ruby_method_vararg *)sphere_radius, 0);
   rb_define_method(cHand, "to_s", (ruby_method_vararg *)hand_to_s, 0);
 }
