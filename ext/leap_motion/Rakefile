@@ -1,0 +1,4 @@
+task :default do
+  libleap = File.expand_path File.join('..', 'LeapSDK', 'lib', 'libLeap.dylib')
+  system "install_name_tool -change @loader_path/libLeap.dylib #{libleap} ../../lib/leap_motion.bundle"
+end

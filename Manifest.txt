@@ -1,4 +1,5 @@
 .autotest
+.gemtest
 CHANGELOG.rdoc
 Manifest.txt
 README.rdoc
@@ -11,8 +12,10 @@ ext/leap_motion/hand.cpp
 ext/leap_motion/leap_motion.cpp
 ext/leap_motion/leap_motion.h
 ext/leap_motion/pointable.cpp
+ext/leap_motion/Rakefile
 ext/leap_motion/tool.cpp
 ext/leap_motion/vector.cpp
 lib/leap_motion.rb
 test/test_leap_motion.rb
 test/test_vector.rb
+ext/LeapSDK/lib/libLeap.dylib
