@@ -14,6 +14,7 @@ extern "C" void Init_leap_motion(void);
 extern "C" void Init_leap_frame(void);
 extern "C" void Init_leap_hand(void);
 extern "C" void Init_leap_finger(void);
+extern "C" void Init_leap_tool(void);
 extern "C" void Init_leap_vector(void);
 extern "C" void Init_leap_pointable(void);
 
@@ -46,9 +47,14 @@ extern "C" void Init_leap_pointable(void);
 VALUE WrapFrame(Leap::Frame * f);
 VALUE WrapHandList(Leap::HandList * hl);
 VALUE WrapHand(Leap::Hand * h);
+
 VALUE WrapFingerList(Leap::FingerList * hl);
-VALUE WrapPointableList(Leap::PointableList * l);
 VALUE WrapFinger(Leap::Finger * finger);
+
+VALUE WrapToolList(Leap::ToolList * fl);
+VALUE WrapTool(Leap::Tool * tool);
+
+VALUE WrapPointableList(Leap::PointableList * l);
 VALUE WrapVector(Leap::Vector * v);
 VALUE MakePointable(Leap::Pointable pointable);
 
