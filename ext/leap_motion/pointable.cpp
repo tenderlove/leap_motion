@@ -156,30 +156,6 @@ static VALUE length(VALUE self)
   return DBL2NUM(pointer->length());
 }
 
-static VALUE finger_p(VALUE self)
-{
-  Leap::Pointable * pointer;
-
-  Data_Get_Struct(self, Leap::Pointable, pointer);
-
-  if (pointer->isFinger())
-    return Qtrue;
-
-  return Qfalse;
-}
-
-static VALUE tool_p(VALUE self)
-{
-  Leap::Pointable * pointer;
-
-  Data_Get_Struct(self, Leap::Pointable, pointer);
-
-  if (pointer->isTool())
-    return Qtrue;
-
-  return Qfalse;
-}
-
 static VALUE valid_p(VALUE self)
 {
   Leap::Pointable * pointer;
@@ -265,8 +241,6 @@ void Init_leap_pointable()
   rb_define_method(cPointable, "direction", (ruby_method_vararg *)direction, 0);
   rb_define_method(cPointable, "width", (ruby_method_vararg *)width, 0);
   rb_define_method(cPointable, "length", (ruby_method_vararg *)length, 0);
-  rb_define_method(cPointable, "finger?", (ruby_method_vararg *)finger_p, 0);
-  rb_define_method(cPointable, "tool?", (ruby_method_vararg *)tool_p, 0);
   rb_define_method(cPointable, "valid?", (ruby_method_vararg *)valid_p, 0);
   rb_define_method(cPointable, "touch_zone", (ruby_method_vararg *)touch_zone, 0);
   rb_define_method(cPointable, "touch_distance", (ruby_method_vararg *)touch_distance, 0);

@@ -88,6 +88,19 @@ module LeapMotion
     def on_focus_lost controller; end
   end
 
+  class Pointable
+    def finger?; false; end
+    def tool?; false; end
+  end
+
+  class Finger < Pointable
+    def finger?; true; end
+  end
+
+  class Tool < Pointable
+    def tool?; true; end
+  end
+
   class Listener
     include Events
   end
