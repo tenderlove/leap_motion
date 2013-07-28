@@ -32,7 +32,7 @@ VALUE MakePointable(Leap::Pointable pointable)
     return WrapFinger(new Leap::Finger(pointable));
 
   if (pointable.isTool())
-    rb_raise(rb_eRuntimeError, "fuu");
+    return WrapTool(new Leap::Tool(pointable));
 
   return WrapPointable(new Leap::Pointable(pointable));
 }
