@@ -5,7 +5,14 @@ README.rdoc
 Rakefile
 bin/leap_motion
 ext/leap_motion/extconf.rb
+ext/leap_motion/finger.cpp
+ext/leap_motion/frame.cpp
+ext/leap_motion/hand.cpp
 ext/leap_motion/leap_motion.cpp
 ext/leap_motion/leap_motion.h
+ext/leap_motion/pointable.cpp
+ext/leap_motion/tool.cpp
+ext/leap_motion/vector.cpp
 lib/leap_motion.rb
 test/test_leap_motion.rb
+test/test_vector.rb
