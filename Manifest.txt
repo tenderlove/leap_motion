@@ -4,7 +4,6 @@ CHANGELOG.rdoc
 Manifest.txt
 README.rdoc
 Rakefile
-bin/leap_motion
 ext/leap_motion/extconf.rb
 ext/leap_motion/finger.cpp
 ext/leap_motion/frame.cpp
