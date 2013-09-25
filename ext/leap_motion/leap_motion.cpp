@@ -107,6 +107,10 @@ class RubyController
 
 RubyController::RubyController() {
   controller = new Leap::Controller;
+  controller->enableGesture(Leap::Gesture::TYPE_CIRCLE);
+  controller->enableGesture(Leap::Gesture::TYPE_KEY_TAP);
+  controller->enableGesture(Leap::Gesture::TYPE_SCREEN_TAP);
+  controller->enableGesture(Leap::Gesture::TYPE_SWIPE);
   listener = new RubyListener;
 }
 
@@ -286,6 +290,7 @@ void Init_leap_motion()
   Init_leap_hand();
   Init_leap_pointable();
   Init_leap_finger();
+  Init_leap_gesture();
   Init_leap_tool();
 
   on_init = rb_intern("on_init");
