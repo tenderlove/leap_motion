@@ -1,6 +1,6 @@
 = leap_motion
 
-* http://github.com/tenderlove/leap_ruby
+* http://github.com/tenderlove/leap_motion
 
 == DESCRIPTION:
 
