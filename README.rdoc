@@ -35,6 +35,11 @@ Wrapper around the C++ api for Leap Motion.
 3. `rake compile`
 5. Hack away
 
+== RELEASING:
+
+$ rake native gem
+$ gem push pkg/path-to-darwin-gem
+
 == LICENSE:
 
 (The MIT License)
