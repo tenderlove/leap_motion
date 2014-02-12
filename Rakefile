@@ -54,4 +54,6 @@ Rake::ExtensionTask.new "leap_motion", hoe.spec do |ext|
   end
 end
 
+task build: [:clean, :compile, :relink]
+
 # vim: syntax=ruby

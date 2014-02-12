@@ -1,1 +1,4 @@
 ext/LeapSDK
+libLeap.dylib
+tmp
+lib/leap_motion.bundle
