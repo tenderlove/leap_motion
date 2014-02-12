@@ -38,6 +38,7 @@ hoe = Hoe.spec 'leap_motion' do
   self.spec_extras = {
     :extensions            => [ "ext/leap_motion/extconf.rb" ],
   }
+  license "MIT"
 end
 
 task :relink do
